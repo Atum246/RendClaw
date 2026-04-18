@@ -1,0 +1,30 @@
+# Logs
+*.log
+npm-debug.log*
+
+# Environment (secrets!)
+.env
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# Node
+node_modules/
+
+# Docker
+.docker/
+
+# Backup temp files
+/tmp/rendclaw-*
+
+!README.md

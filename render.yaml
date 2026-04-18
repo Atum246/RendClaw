@@ -1,0 +1,55 @@
+# ============================================================
+# 🎨🦞 RendClaw — Render Blueprint
+# Deploy OpenClaw on Render with one click
+# ============================================================
+
+services:
+  # ─── Main RendClaw Service ─────────────────────────────────
+  - type: web
+    name: rendclaw
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    plan: free                    # Free tier! 🆓
+    autoDeploy: true              # Auto-deploy on git push
+    envVars:
+      # Required (user must set these)
+      - key: LLM_API_KEY
+        sync: false
+      - key: LLM_MODEL
+        value: "anthropic/claude-sonnet-4-6"
+      - key: GATEWAY_TOKEN
+        generateValue: true       # Render auto-generates if not set
+
+      # Platform detection
+      - key: NEOCLAW_PLATFORM
+        value: "render"
+
+      # Render-specific
+      - key: RENDER_EXTERNAL_URL
+        fromService:
+          type: web
+          name: rendclaw
+          property: host
+
+      # Optional — uncomment and set as needed
+      # - key: TELEGRAM_BOT_TOKEN
+      #   sync: false
+      # - key: TELEGRAM_USER_ID
+      #   sync: false
+      # - key: WHATSAPP_ENABLED
+      #   value: "false"
+      # - key: DISCORD_TOKEN
+      #   sync: false
+      # - key: WEBHOOK_URL
+      #   sync: false
+      # - key: UPTIMEROBOT_API_KEY
+      #   sync: false
+
+    # Health check
+    healthCheckPath: /health
+
+    # Disk for persistent workspace
+    disk:
+      name: rendclaw-workspace
+      mountPath: /root/.openclaw/workspace
+      sizeGB: 1
