@@ -78,5 +78,5 @@ CMD ["/bin/bash", "-c", "\
     sleep 2 && \
     python3 /app/workspace-sync.py --daemon & \
     node /app/keepalive.js & \
-    exec openclaw gateway start --foreground \
+    PORT=7860 exec openclaw gateway start --foreground \
 "]
