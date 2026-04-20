@@ -71,11 +71,12 @@ ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
 EXPOSE 10000
 
 # ─── Startup ────────────────────────────────────────────────
+# Run all services properly: restore first, then start everything in parallel.
+# Use exec for the gateway so it becomes PID 1 and receives signals correctly.
 CMD ["/bin/bash", "-c", "\
     cat /app/banner.txt && \
-    bash /app/start.sh & \
+    bash /app/start.sh && \
     node /app/health-server.js & \
-    sleep 2 && \
     python3 /app/workspace-sync.py --daemon & \
     node /app/keepalive.js & \
     PORT=7860 exec openclaw gateway start --foreground \

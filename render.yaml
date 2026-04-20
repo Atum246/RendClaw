@@ -31,6 +31,16 @@ services:
           name: rendclaw
           property: host
 
+      # Backup — GitHub Gist (recommended for Render)
+      - key: GITHUB_GIST_TOKEN
+        sync: false
+      - key: GITHUB_GIST_ID
+        sync: false
+      - key: BACKUP_ENABLED
+        value: "true"
+      - key: SYNC_INTERVAL
+        value: "120"
+
       # Optional — uncomment and set as needed
       # - key: TELEGRAM_BOT_TOKEN
       #   sync: false
@@ -48,8 +58,5 @@ services:
     # Health check
     healthCheckPath: /health
 
-    # Disk for persistent workspace
-    disk:
-      name: rendclaw-workspace
-      mountPath: /root/.openclaw/workspace
-      sizeGB: 1
+    # NOTE: No disk block — Render free tier doesn't support persistent disks.
+    # Workspace is backed up via workspace-sync.py (GitHub Gist, HF, or S3).

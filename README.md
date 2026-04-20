@@ -111,9 +111,16 @@ Then scan the QR from your Dashboard (Channels → WhatsApp → Login).
 
 ---
 
-## 💾 Workspace Backup
+## 💾 Workspace Backup (Auto-Sync!)
 
-Render doesn't have built-in storage like HuggingFace, so backup is extra important!
+**Render free tier has no persistent disk.** RendClaw handles this automatically:
+
+🔄 **On every restart**, RendClaw:
+1. **Restores** your workspace from backup (AGENTS.md, SOUL.md, MEMORY.md, etc.)
+2. **Auto-syncs** changes every 2 minutes to your configured backend
+3. **Persists the Gist ID** so you never lose your backup chain
+
+Your conversations, memory, and config **carry over seamlessly** — just set up one backup backend and you're good! ✅
 
 ### GitHub Gist (Recommended for Render)
 
@@ -124,7 +131,13 @@ Render doesn't have built-in storage like HuggingFace, so backup is extra import
 GITHUB_GIST_TOKEN=ghp_your-token
 ```
 
-RendClaw will auto-create a Gist and save the ID for future syncs.
+RendClaw will:
+- Auto-create a Gist on first run
+- Persist the Gist ID (survives restarts)
+- Pack workspace as `tar.gz` + keep key files visible
+- Sync every 2 minutes when changes are detected
+
+**That's it!** No `GITHUB_GIST_ID` needed — it's created and saved automatically. 🎉
 
 ### HuggingFace Datasets (Optional)
 
@@ -286,7 +299,7 @@ RendClaw/
 | Service keeps spinning down | Set `UPTIMEROBOT_API_KEY` — free tier spins down after 15 min |
 | Missing secrets error | Set `LLM_API_KEY`, `LLM_MODEL`, `GATEWAY_TOKEN` |
 | Build fails | Check Render logs, ensure Docker is selected as runtime |
-| Backup not working | Set `GITHUB_GIST_TOKEN` with gist scope |
+| Backup not working | Set `GITHUB_GIST_TOKEN` with gist scope. Gist ID is auto-created & persisted |
 | WhatsApp lost session | Configure backup so session persists across restarts |
 | CORS errors | Set `ALLOWED_ORIGINS=https://your-service.onrender.com` |
 | Memory issues | Free tier has 512MB limit — check dashboard |

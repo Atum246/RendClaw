@@ -3,6 +3,8 @@
 🎨🦞 RendClaw Workspace Sync
 Multi-backend backup: GitHub Gist, S3, HuggingFace Datasets
 Optimized for Render (no built-in storage like HF)
+
+v2 — Fixed: nested path handling, GIST_ID persistence, robust restore
 """
 
 import os
@@ -12,15 +14,16 @@ import time
 import shutil
 import subprocess
 import hashlib
+import base64
+import tarfile
+import io
 from pathlib import Path
 from datetime import datetime, timezone
 from typing import Optional
 
 # ─── Configuration ─────────────────────────────────────────────
 WORKSPACE_PATH = os.environ.get("WORKSPACE_PATH", "/root/.openclaw/workspace")
-SYNC_INTERVAL = int(os.environ.get("SYNC_INTERVAL", "180"))
-GIT_USER = os.environ.get("WORKSPACE_GIT_USER", "rendclaw@example.com")
-GIT_NAME = os.environ.get("WORKSPACE_GIT_NAME", "RendClaw Bot")
+SYNC_INTERVAL = int(os.environ.get("SYNC_INTERVAL", "120"))
 
 # Backup backends
 GITHUB_TOKEN = os.environ.get("GITHUB_GIST_TOKEN", "")
@@ -33,6 +36,9 @@ S3_REGION = os.environ.get("S3_REGION", "us-east-1")
 
 BACKUP_DIR = Path("/tmp/rendclaw-backup")
 STATE_FILE = Path("/tmp/rendclaw-sync-state.json")
+
+# Persistent GIST_ID storage — survives restarts within same deploy
+GIST_ID_FILE = Path("/root/.openclaw/.rendclaw-gist-id")
 
 
 def log(msg: str, level: str = "INFO"):
@@ -70,45 +76,115 @@ def save_state(state: dict):
     STATE_FILE.write_text(json.dumps(state, indent=2))
 
 
+def get_persisted_gist_id() -> str:
+    """Get GIST_ID from env, state file, or workspace file (in that priority)."""
+    # 1. Environment variable (highest priority)
+    if GITHUB_GIST_ID:
+        return GITHUB_GIST_ID
+    # 2. Persistent file in workspace
+    if GIST_ID_FILE.exists():
+        try:
+            return GIST_ID_FILE.read_text().strip()
+        except Exception:
+            pass
+    # 3. State file
+    state = load_state()
+    return state.get("gist_id", "")
+
+
+def persist_gist_id(gist_id: str):
+    """Save GIST_ID to both file and state so it survives restarts."""
+    try:
+        GIST_ID_FILE.parent.mkdir(parents=True, exist_ok=True)
+        GIST_ID_FILE.write_text(gist_id)
+    except Exception as e:
+        log(f"Could not persist GIST_ID to file: {e}", "WARN")
+    
+    state = load_state()
+    state["gist_id"] = gist_id
+    save_state(state)
+
+
 # ─── GitHub Gist Backend (Primary for Render) ────────────────
 class GistBackend:
-    """Primary backup backend for Render — uses GitHub Gists."""
+    """Primary backup backend for Render — uses GitHub Gists.
+    
+    Gists are flat (no real directories), so we handle nested paths by:
+    - On sync: flatten paths like 'memory/2026-04-20.md' → gist filename 'memory/2026-04-20.md'
+      (GitHub API supports slashes in gist filenames natively!)
+    - On restore: recreate directory structure from gist filenames
+    - For large workspaces: pack into a single .tar.gz base64 blob as fallback
+    """
     
     def __init__(self):
         self.available = bool(GITHUB_TOKEN)
+        self.gist_id = get_persisted_gist_id()
         if self.available:
-            log("Gist backend: available ✅", "INFO")
+            log(f"Gist backend: available ✅ (GIST_ID: {self.gist_id or 'new'})", "INFO")
         else:
             log("Gist backend: not configured (set GITHUB_GIST_TOKEN)", "INFO")
 
     def restore(self) -> bool:
-        if not self.available or not GITHUB_GIST_ID:
+        if not self.available:
             return False
+        
+        gist_id = get_persisted_gist_id()
+        if not gist_id:
+            log("No GIST_ID found — nothing to restore from", "INFO")
+            return False
+            
         try:
             import urllib.request
-            log(f"Restoring from GitHub Gist: {GITHUB_GIST_ID}", "SYNC")
+            log(f"Restoring from GitHub Gist: {gist_id}", "SYNC")
             req = urllib.request.Request(
-                f"https://api.github.com/gists/{GITHUB_GIST_ID}",
+                f"https://api.github.com/gists/{gist_id}",
                 headers={"Authorization": f"token {GITHUB_TOKEN}"}
             )
             with urllib.request.urlopen(req) as resp:
                 data = json.loads(resp.read())
 
-            gist_dir = BACKUP_DIR / "gist"
-            gist_dir.mkdir(parents=True, exist_ok=True)
+            files = data.get("files", {})
+            if not files:
+                log("Gist is empty — nothing to restore", "WARN")
+                return False
 
-            for filename, file_data in data.get("files", {}).items():
-                content = file_data.get("content", "")
-                (gist_dir / filename).write_text(content)
+            ws = Path(WORKSPACE_PATH)
+            
+            # Check if we have a tar.gz archive (our preferred format)
+            if "workspace.tar.gz.b64" in files:
+                log("Found archived workspace — extracting...", "SYNC")
+                b64_content = files["workspace.tar.gz.b64"].get("content", "")
+                tar_bytes = base64.b64decode(b64_content)
+                tar_buffer = io.BytesIO(tar_bytes)
+                with tarfile.open(fileobj=tar_buffer, mode="r:gz") as tar:
+                    tar.extractall(path=str(ws))
+                log("Archive restore complete! 💾", "OK")
+                return True
 
-            # Restore to workspace
-            for item in gist_dir.iterdir():
-                dest = Path(WORKSPACE_PATH) / item.name
+            # Fallback: restore individual files (preserves directory structure)
+            # GitHub API supports slashes in gist filenames, so paths like
+            # 'memory/2026-04-20.md' work natively — mkdir recreates dirs.
+            restored_count = 0
+            for filename, fdata in files.items():
+                # Skip metadata/backup files
+                if filename.startswith('.rendclaw'):
+                    continue
+                if filename == "workspace.tar.gz.b64":
+                    continue
+                content = fdata.get("content", "")
+                dest = ws / filename
                 dest.parent.mkdir(parents=True, exist_ok=True)
-                shutil.copy2(item, dest)
+                dest.write_text(content)
+                restored_count += 1
 
-            log("Gist restore complete! 💾", "OK")
+            log(f"Restored {restored_count} files from Gist! 💾", "OK")
             return True
+        except urllib.error.HTTPError as e:
+            if e.code == 404:
+                log(f"Gist {gist_id} not found (404) — may have been deleted", "WARN")
+            else:
+                log(f"Gist restore failed: HTTP {e.code}", "WARN")
+            return False
         except Exception as e:
             log(f"Gist restore failed: {e}", "WARN")
             return False
@@ -118,28 +194,76 @@ class GistBackend:
             return False
         try:
             import urllib.request
-            # Collect workspace files
-            files = {}
+            
             ws = Path(WORKSPACE_PATH)
+            
+            # Pack workspace into tar.gz for reliable nested path handling
+            tar_buffer = io.BytesIO()
+            with tarfile.open(fileobj=tar_buffer, mode="w:gz") as tar:
+                for f in sorted(ws.rglob("*")):
+                    if f.is_file():
+                        rel = str(f.relative_to(ws))
+                        # Skip hidden dirs, git, node_modules, etc.
+                        parts = f.relative_to(ws).parts
+                        if any(p.startswith('.') for p in parts):
+                            continue
+                        if any(skip in rel for skip in ['node_modules', '__pycache__', '.git']):
+                            continue
+                        # Skip large files (>500KB)
+                        try:
+                            if f.stat().st_size > 500_000:
+                                continue
+                            tar.add(str(f), arcname=rel)
+                        except (PermissionError, OSError):
+                            continue
+            
+            tar_bytes = tar_buffer.getvalue()
+            b64_content = base64.b64encode(tar_bytes).decode()
+            
+            # Also keep individual files as fallback (small workspaces)
+            individual_files = {}
             for f in sorted(ws.rglob("*")):
-                if f.is_file() and f.stat().st_size < 1_000_000:
+                if f.is_file() and f.stat().st_size < 100_000:
                     rel = str(f.relative_to(ws))
-                    if any(part.startswith('.') for part in f.parts):
+                    parts = f.relative_to(ws).parts
+                    if any(p.startswith('.') for p in parts):
                         continue
                     if any(skip in rel for skip in ['node_modules', '__pycache__', '.git']):
                         continue
                     try:
-                        files[rel] = {"content": f.read_text(errors='replace')}
+                        individual_files[rel] = {"content": f.read_text(errors='replace')}
                     except Exception:
                         continue
 
+            # Build gist payload — archive as primary, individual files as reference
+            files = {
+                "workspace.tar.gz.b64": {"content": b64_content}
+            }
+            
+            # Add key workspace files individually for easy browsing
+            for key_file in ["AGENTS.md", "SOUL.md", "USER.md", "IDENTITY.md", 
+                             "TOOLS.md", "HEARTBEAT.md", "MEMORY.md"]:
+                if key_file in individual_files:
+                    files[key_file] = individual_files[key_file]
+
+            # Add metadata
+            meta = {
+                "last_sync": datetime.now(timezone.utc).isoformat(),
+                "platform": os.environ.get("NEOCLAW_PLATFORM", "render"),
+                "file_count": len(individual_files),
+                "hash": get_workspace_hash(),
+                "gist_version": 2
+            }
+            files[".rendclaw-meta.json"] = {"content": json.dumps(meta, indent=2)}
+
             payload = json.dumps({
-                "description": f"RendClaw backup {datetime.now(timezone.utc).isoformat()}",
+                "description": f"🦞 RendClaw workspace backup — {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M UTC')}",
                 "files": files
             }).encode()
 
-            if GITHUB_GIST_ID:
-                url = f"https://api.github.com/gists/{GITHUB_GIST_ID}"
+            gist_id = get_persisted_gist_id()
+            if gist_id:
+                url = f"https://api.github.com/gists/{gist_id}"
                 method = "PATCH"
             else:
                 url = "https://api.github.com/gists"
@@ -152,10 +276,12 @@ class GistBackend:
             with urllib.request.urlopen(req) as resp:
                 result = json.loads(resp.read())
                 gist_url = result.get('html_url', '')
+                new_id = result.get('id', '')
                 
-                # Save gist ID for future syncs
-                if not GITHUB_GIST_ID and result.get('id'):
-                    log(f"Created new Gist: {gist_url}", "OK")
+                if not gist_id and new_id:
+                    persist_gist_id(new_id)
+                    log(f"Created new Gist: {gist_url} (ID: {new_id})", "OK")
+                    log(f"GIST_ID persisted to {GIST_ID_FILE}", "INFO")
                 else:
                     log(f"Gist sync complete! {gist_url}", "OK")
             return True
@@ -264,7 +390,6 @@ class S3Backend:
             return False
         try:
             log(f"Restoring from S3: {S3_BUCKET}", "SYNC")
-            # Create temp archive
             archive = BACKUP_DIR / "s3-backup.tar.gz"
             archive.parent.mkdir(parents=True, exist_ok=True)
 
@@ -290,13 +415,11 @@ class S3Backend:
             archive = BACKUP_DIR / "rendclaw-backup.tar.gz"
             archive.parent.mkdir(parents=True, exist_ok=True)
 
-            # Create tar of workspace
             subprocess.run(
                 ["tar", "-czf", str(archive), "-C", WORKSPACE_PATH, "."],
                 capture_output=True, timeout=60
             )
 
-            # Upload to S3
             subprocess.run(
                 ["aws", "s3", "cp", str(archive), f"s3://{S3_BUCKET}/rendclaw-backup.tar.gz"],
                 capture_output=True, timeout=60
@@ -326,17 +449,26 @@ class SyncManager:
             log("Or set HF_USERNAME + HF_TOKEN for HuggingFace backup", "INFO")
 
     def restore(self) -> bool:
+        """Try all backends in priority order until one succeeds."""
         for backend in self.backends:
-            if backend.restore():
-                return True
+            try:
+                if backend.restore():
+                    return True
+            except Exception as e:
+                log(f"{type(backend).__name__} restore error: {e}", "WARN")
+                continue
         return False
 
     def sync(self) -> bool:
+        """Sync to all backends (best-effort, at least one must succeed)."""
         success = False
         for backend in self.backends:
-            if backend.sync():
-                success = True
-                break
+            try:
+                if backend.sync():
+                    success = True
+                    # Don't break — sync to ALL configured backends for redundancy
+            except Exception as e:
+                log(f"{type(backend).__name__} sync error: {e}", "WARN")
         return success
 
     def run_daemon(self):
@@ -345,21 +477,30 @@ class SyncManager:
         log(f"Backends: {[type(b).__name__ for b in self.backends]}")
 
         state = load_state()
+        consecutive_failures = 0
 
         while True:
             try:
                 current_hash = get_workspace_hash()
-                if current_hash != state.get("last_hash", ""):
+                if current_hash and current_hash != state.get("last_hash", ""):
                     log("Changes detected — syncing...", "SYNC")
                     if self.sync():
                         state["last_hash"] = current_hash
                         state["last_sync"] = time.time()
                         state["sync_count"] = state.get("sync_count", 0) + 1
                         save_state(state)
+                        consecutive_failures = 0
                     else:
-                        log("All sync backends failed!", "ERROR")
+                        consecutive_failures += 1
+                        log(f"All sync backends failed! (attempt {consecutive_failures})", "ERROR")
+                        if consecutive_failures >= 5:
+                            log("5 consecutive failures — will keep retrying but check your config!", "ERROR")
                 else:
-                    log("No changes detected", "INFO")
+                    # No changes, but do a periodic full sync every 10 cycles
+                    # (handles edge cases like gist ID recovery)
+                    if state.get("sync_count", 0) % 10 == 0 and state.get("sync_count", 0) > 0:
+                        log("Periodic full sync...", "SYNC")
+                        self.sync()
             except Exception as e:
                 log(f"Sync error: {e}", "ERROR")
 
@@ -380,9 +521,19 @@ def main():
             manager.run_daemon()
         elif cmd == "--status":
             state = load_state()
+            state["gist_id"] = get_persisted_gist_id()
+            state["backends"] = [type(b).__name__ for b in manager.backends]
             print(json.dumps(state, indent=2))
+        elif cmd == "--reset-gist":
+            if GIST_ID_FILE.exists():
+                GIST_ID_FILE.unlink()
+                log("Gist ID file removed", "OK")
+            state = load_state()
+            state.pop("gist_id", None)
+            save_state(state)
+            log("Gist ID removed from state", "OK")
         else:
-            print(f"Usage: {sys.argv[0]} [--restore|--sync|--daemon|--status]")
+            print(f"Usage: {sys.argv[0]} [--restore|--sync|--daemon|--status|--reset-gist]")
             sys.exit(1)
     else:
         manager.sync()
