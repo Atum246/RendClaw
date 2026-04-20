@@ -121,12 +121,12 @@ validate_secrets() {
 detect_render_url() {
     if [ "$PLATFORM" = "render" ]; then
         if [ -n "${RENDER_EXTERNAL_URL:-}" ]; then
-    if [[ "$RENDER_EXTERNAL_URL" == https://* ]]; then
-        export NEOCLAW_EXTERNAL_URL="$RENDER_EXTERNAL_URL"
-    else
-        export NEOCLAW_EXTERNAL_URL="https://${RENDER_EXTERNAL_URL}"
-    fi
-    log_info "Render URL: $NEOCLAW_EXTERNAL_URL"
+            if [[ "$RENDER_EXTERNAL_URL" == https://* ]]; then
+                export NEOCLAW_EXTERNAL_URL="$RENDER_EXTERNAL_URL"
+            else
+                export NEOCLAW_EXTERNAL_URL="https://${RENDER_EXTERNAL_URL}"
+            fi
+            log_info "Render URL: $NEOCLAW_EXTERNAL_URL"
         elif [ -n "${RENDER_SERVICE_NAME:-}" ]; then
             export NEOCLAW_EXTERNAL_URL="https://${RENDER_SERVICE_NAME}.onrender.com"
             log_info "Render URL: $NEOCLAW_EXTERNAL_URL"

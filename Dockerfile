@@ -79,5 +79,5 @@ CMD ["/bin/bash", "-c", "\
     node /app/health-server.js & \
     python3 /app/workspace-sync.py --daemon & \
     node /app/keepalive.js & \
-    PORT=7860 exec openclaw gateway start --foreground \
+    PORT=7860 exec openclaw gateway run \
 "]

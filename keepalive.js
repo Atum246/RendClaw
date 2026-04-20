@@ -11,7 +11,9 @@ const http = require('http');
 // ─── Config ─────────────────────────────────────────────────
 const HEALTH_URL = process.env.RENDCLAW_HEALTH_URL || `http://localhost:${process.env.HEALTH_PORT || 10000}/health`;
 const EXTERNAL_URL = process.env.NEOCLAW_EXTERNAL_URL ||
-    (process.env.RENDER_EXTERNAL_URL ? `https://${process.env.RENDER_EXTERNAL_URL}` : '');
+    (process.env.RENDER_EXTERNAL_URL ?
+        (process.env.RENDER_EXTERNAL_URL.startsWith('http') ? process.env.RENDER_EXTERNAL_URL : `https://${process.env.RENDER_EXTERNAL_URL}`)
+        : '');
 const UPTIMEROBOT_KEY = process.env.UPTIMEROBOT_API_KEY || '';
 const CRONJOB_ORG_KEY = process.env.CRONJOB_ORG_KEY || '';
 const SELF_PING_INTERVAL = parseInt(process.env.SELF_PING_INTERVAL || '600000'); // 10 min for Render
