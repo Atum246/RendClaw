@@ -38,7 +38,40 @@ BACKUP_DIR = Path("/tmp/rendclaw-backup")
 STATE_FILE = Path("/tmp/rendclaw-sync-state.json")
 
 # Persistent GIST_ID storage — survives restarts within same deploy
-GIST_ID_FILE = Path("/root/.openclaw/.rendclaw-gist-id")
+def get_persisted_gist_id() -> str:
+    """Get GIST_ID from env, workspace file, or state file (in that priority)."""
+    # 1. Environment variable (highest priority — set by user in Render dashboard)
+    if GITHUB_GIST_ID:
+        return GITHUB_GIST_ID
+    # 2. File inside workspace (survives in backups since workspace gets synced)
+    ws_gist_file = Path(WORKSPACE_PATH) / ".rendclaw-gist-id"
+    if ws_gist_file.exists():
+        try:
+            gid = ws_gist_file.read_text().strip()
+            if gid:
+                return gid
+        except Exception:
+            pass
+    # 3. State file (temporary, wiped on restart but useful during runtime)
+    state = load_state()
+    return state.get("gist_id", "")
+
+
+def persist_gist_id(gist_id: str):
+    """Save GIST_ID to workspace file + state so it survives in backups."""
+    # Save INSIDE workspace — this way it gets included in gist backup!
+    ws = Path(WORKSPACE_PATH)
+    ws.mkdir(parents=True, exist_ok=True)
+    ws_gist_file = ws / ".rendclaw-gist-id"
+    try:
+        ws_gist_file.write_text(gist_id)
+    except Exception as e:
+        pass  # Non-critical, workspace may not exist yet
+    
+    # Also save to state for runtime use
+    state = load_state()
+    state["gist_id"] = gist_id
+    save_state(state)
 
 
 def log(msg: str, level: str = "INFO"):
@@ -76,35 +109,6 @@ def save_state(state: dict):
     STATE_FILE.write_text(json.dumps(state, indent=2))
 
 
-def get_persisted_gist_id() -> str:
-    """Get GIST_ID from env, state file, or workspace file (in that priority)."""
-    # 1. Environment variable (highest priority)
-    if GITHUB_GIST_ID:
-        return GITHUB_GIST_ID
-    # 2. Persistent file in workspace
-    if GIST_ID_FILE.exists():
-        try:
-            return GIST_ID_FILE.read_text().strip()
-        except Exception:
-            pass
-    # 3. State file
-    state = load_state()
-    return state.get("gist_id", "")
-
-
-def persist_gist_id(gist_id: str):
-    """Save GIST_ID to both file and state so it survives restarts."""
-    try:
-        GIST_ID_FILE.parent.mkdir(parents=True, exist_ok=True)
-        GIST_ID_FILE.write_text(gist_id)
-    except Exception as e:
-        log(f"Could not persist GIST_ID to file: {e}", "WARN")
-    
-    state = load_state()
-    state["gist_id"] = gist_id
-    save_state(state)
-
-
 # ─── GitHub Gist Backend (Primary for Render) ────────────────
 class GistBackend:
     """Primary backup backend for Render — uses GitHub Gists.
@@ -124,14 +128,57 @@ class GistBackend:
         else:
             log("Gist backend: not configured (set GITHUB_GIST_TOKEN)", "INFO")
 
+    def _find_existing_gist(self) -> Optional[str]:
+        """Search GitHub for the most recent RendClaw backup gist."""
+        import urllib.request
+        try:
+            log("Searching GitHub for existing RendClaw backups...", "SYNC")
+            req = urllib.request.Request(
+                "https://api.github.com/gists?per_page=100",
+                headers={
+                    "Authorization": f"token {GITHUB_TOKEN}",
+                    "Accept": "application/vnd.github.v3+json"
+                }
+            )
+            with urllib.request.urlopen(req) as resp:
+                gists = json.loads(resp.read())
+            
+            # Find gists with RendClaw backup pattern
+            best = None
+            best_time = ""
+            for g in gists:
+                desc = g.get("description", "")
+                if "RendClaw" in desc or "rendclaw" in desc.lower():
+                    # Pick the most recently updated one
+                    updated = g.get("updated_at", "")
+                    if updated > best_time:
+                        best_time = updated
+                        best = g.get("id", "")
+            
+            if best:
+                log(f"Found existing RendClaw backup: {best} (updated {best_time})", "OK")
+                persist_gist_id(best)
+                return best
+            
+            log("No existing RendClaw backup found", "INFO")
+            return None
+        except Exception as e:
+            log(f"Gist search failed: {e}", "WARN")
+            return None
+
     def restore(self) -> bool:
         if not self.available:
             return False
         
         gist_id = get_persisted_gist_id()
+        
+        # Auto-discover if no GIST_ID known — this is the KEY fix for
+        # seamless "pick up where you left off" on Render free tier!
         if not gist_id:
-            log("No GIST_ID found — nothing to restore from", "INFO")
-            return False
+            gist_id = self._find_existing_gist()
+            if not gist_id:
+                log("No backup found — starting fresh 🆕", "INFO")
+                return False
             
         try:
             import urllib.request
@@ -197,15 +244,20 @@ class GistBackend:
             
             ws = Path(WORKSPACE_PATH)
             
+            # Files that should ALWAYS be included (even if hidden)
+            ALLOWED_HIDDEN = {".rendclaw-gist-id"}
+            
             # Pack workspace into tar.gz for reliable nested path handling
             tar_buffer = io.BytesIO()
             with tarfile.open(fileobj=tar_buffer, mode="w:gz") as tar:
                 for f in sorted(ws.rglob("*")):
                     if f.is_file():
                         rel = str(f.relative_to(ws))
-                        # Skip hidden dirs, git, node_modules, etc.
+                        # Skip hidden dirs/files EXCEPT allowed ones
                         parts = f.relative_to(ws).parts
-                        if any(p.startswith('.') for p in parts):
+                        is_hidden = any(p.startswith('.') for p in parts)
+                        is_allowed = rel in ALLOWED_HIDDEN
+                        if is_hidden and not is_allowed:
                             continue
                         if any(skip in rel for skip in ['node_modules', '__pycache__', '.git']):
                             continue
@@ -226,7 +278,9 @@ class GistBackend:
                 if f.is_file() and f.stat().st_size < 100_000:
                     rel = str(f.relative_to(ws))
                     parts = f.relative_to(ws).parts
-                    if any(p.startswith('.') for p in parts):
+                    is_hidden = any(p.startswith('.') for p in parts)
+                    is_allowed = rel in ALLOWED_HIDDEN
+                    if is_hidden and not is_allowed:
                         continue
                     if any(skip in rel for skip in ['node_modules', '__pycache__', '.git']):
                         continue
@@ -281,7 +335,6 @@ class GistBackend:
                 if not gist_id and new_id:
                     persist_gist_id(new_id)
                     log(f"Created new Gist: {gist_url} (ID: {new_id})", "OK")
-                    log(f"GIST_ID persisted to {GIST_ID_FILE}", "INFO")
                 else:
                     log(f"Gist sync complete! {gist_url}", "OK")
             return True
@@ -342,7 +395,7 @@ class HFBackend:
             exclude_dirs = {'.git', '__pycache__', 'node_modules', '.cache'}
 
             for item in ws.iterdir():
-                if item.name.startswith('.') and item.name not in {'.env', '.env.example'}:
+                if item.name.startswith('.') and item.name not in {'.env', '.env.example', '.rendclaw-gist-id'}:
                     continue
                 if item.name in exclude_dirs:
                     continue
@@ -525,9 +578,10 @@ def main():
             state["backends"] = [type(b).__name__ for b in manager.backends]
             print(json.dumps(state, indent=2))
         elif cmd == "--reset-gist":
-            if GIST_ID_FILE.exists():
-                GIST_ID_FILE.unlink()
-                log("Gist ID file removed", "OK")
+            ws_gist_file = Path(WORKSPACE_PATH) / ".rendclaw-gist-id"
+            if ws_gist_file.exists():
+                ws_gist_file.unlink()
+                log("Gist ID file removed from workspace", "OK")
             state = load_state()
             state.pop("gist_id", None)
             save_state(state)
