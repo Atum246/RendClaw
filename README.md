@@ -290,249 +290,356 @@ Your workspace resets on every restart until you add this token. No data is lost
 
 ## 🤖 AI Model Providers
 
-You can use **any AI provider** with RendClaw. Here's a comprehensive setup guide:
-
-### Quick Reference
-
-| Provider | API Key Prefix | Model Prefix | Free Tier? | Example Model |
-|----------|---------------|-------------|------------|---------------|
-| [OpenRouter](#openrouter-🔥) | `sk-or-v1-` | `openrouter/` | ✅ Free models | `openrouter/meta-llama/llama-3.1-8b-instruct:free` |
-| [NVIDIA NIM](#nvidia-nim-🟢-free) | `nvapi-` | `nvidia/` | ✅ Free! | `nvidia/llama-3.1-8b-instruct` |
-| [Puter.js](#puterjs-🟢-100-free) | *(none needed!)* | `puter/` | ✅ Free forever! | `puter/ai/gpt-4o` |
-| [OpenAI](#openai) | `sk-` | `openai/` | ❌ Pay | `openai/gpt-4o` |
-| [Anthropic](#anthropic) | `sk-ant-` | `anthropic/` | ❌ Pay | `anthropic/claude-sonnet-4-6` |
-| [Google](#google) | `AIza` | `google/` | ✅ Free tier | `google/gemini-2.5-flash` |
-| [DeepSeek](#deepseek) | `sk-` | `deepseek/` | ✅ Cheap | `deepseek/deepseek-chat` |
-| [Mistral](#mistral) | `*` | `mistral/` | ✅ Free tier | `mistral/mistral-small-latest` |
-| [Moonshot](#moonshot-kimi) | `sk-` | `moonshot/` | ✅ Free tier | `moonshot/kimi-k2.5` |
-| [xAI (Grok)](#xai-grok) | `xai-` | `xai/` | ❌ Pay | `xai/grok-4` |
+You can use **any AI provider** with RendClaw. Here's everything you need — including **completely free options**.
 
 ---
 
-### OpenRouter 🔥
+### 🆓 Free Providers (No Payment Required)
 
-**One API key, 40+ models, including free ones.** The easiest way to access everything.
-
-#### How to Get Started
-
-1. Go to **[openrouter.ai](https://openrouter.ai)**
-2. Sign up (GitHub/Google login works)
-3. Go to **[openrouter.ai/keys](https://openrouter.ai/keys)**
-4. Click **"Create Key"** → copy it (starts with `sk-or-v1-`)
-5. Set on Render:
-   ```
-   LLM_API_KEY=sk-or-v1-xxxxxxxx
-   LLM_MODEL=openrouter/meta-llama/llama-3.1-8b-instruct:free
-   ```
-
-#### Free Models on OpenRouter 🆓
-
-These models cost $0 on OpenRouter:
-
-| Model | LLM_MODEL value | Best For |
-|-------|----------------|----------|
-| Llama 3.1 8B | `openrouter/meta-llama/llama-3.1-8b-instruct:free` | General chat |
-| Mistral 7B | `openrouter/mistralai/mistral-7b-instruct:free` | Fast responses |
-| Gemma 2 9B | `openrouter/google/gemma-2-9b-it:free` | Balanced |
-| Llama 3.2 3B | `openrouter/meta-llama/llama-3.2-3b-instruct:free` | Ultra-fast |
-
-#### Premium Models on OpenRouter 💎
-
-| Model | LLM_MODEL value | Cost |
-|-------|----------------|------|
-| Claude Sonnet 4 | `openrouter/anthropic/claude-sonnet-4-6` | $3/1M input |
-| GPT-4o | `openrouter/openai/gpt-4o` | $5/1M input |
-| Gemini 2.5 Flash | `openrouter/google/gemini-2.5-flash` | $0.15/1M input |
-| DeepSeek V3 | `openrouter/deepseek/deepseek-v3` | $0.27/1M input |
-
-> 💡 **Best free setup:** Use Llama 3.1 8B free for daily use, switch to Claude/GPT for complex tasks.
+These providers are **100% free** — no credit card, no trial, just sign up and go.
 
 ---
 
-### NVIDIA NIM 🟢 FREE
+#### OpenRouter Free Models 🔥
 
-**Free AI inference from NVIDIA.** No credit card, no payment, just good models.
+[OpenRouter](https://openrouter.ai) gives you **one API key** for 40+ providers. Many models are completely free.
 
-#### What is NIM?
+| Model | `LLM_MODEL` value | Size | Best For |
+|-------|-------------------|------|----------|
+| **Gemma 4 31B** 🆕 | `openrouter/google/gemma-4-31b-it:free` | 31B | General, coding, reasoning |
+| **Gemma 4 26B (MoE)** 🆕 | `openrouter/google/gemma-4-26b-a4b-it:free` | 26B | Fast + capable |
+| **Gemma 3 27B** | `openrouter/google/gemma-3-27b-it:free` | 27B | Balanced, great quality |
+| **Gemma 3 12B** | `openrouter/google/gemma-3-12b-it:free` | 12B | Fast, good quality |
+| **Gemma 3 4B** | `openrouter/google/gemma-3-4b-it:free` | 4B | Ultra-fast responses |
+| **Llama 3.3 70B** | `openrouter/meta-llama/llama-3.3-70b-instruct:free` | 70B | Complex reasoning |
+| **Hermes 3 405B** | `openrouter/nousresearch/hermes-3-llama-3.1-405b:free` | 405B | 🤯 Largest free model |
+| **Qwen3 Coder** | `openrouter/qwen/qwen3-coder:free` | — | Coding specialist |
+| **Qwen3 80B (MoE)** | `openrouter/qwen/qwen3-next-80b-a3b-instruct:free` | 80B | Fast reasoning |
+| **GPT-OSS 120B** | `openrouter/openai/gpt-oss-120b:free` | 120B | Open-source GPT |
+| **GPT-OSS 20B** | `openrouter/openai/gpt-oss-20b:free` | 20B | Fast open GPT |
+| **GLM 4.5 Air** | `openrouter/z-ai/glm-4.5-air:free` | — | Chinese + English |
+| **Nemotron Super 120B** | `openrouter/nvidia/nemotron-3-super-120b-a12b:free` | 120B | Massive context |
+| **Nemotron Nano 9B** | `openrouter/nvidia/nemotron-nano-9b-v2:free` | 9B | Compact + fast |
+| **MiniMax M2.5** | `openrouter/minimax/minimax-m2.5:free` | — | Chinese language |
+| **Llama 3.2 3B** | `openrouter/meta-llama/llama-3.2-3b-instruct:free` | 3B | Ultra-lightweight |
 
-NVIDIA NIM (NVIDIA Inference Microservices) provides free API access to open-source models hosted on NVIDIA's infrastructure. Models run on NVIDIA GPUs and are free to use.
+**Limits:** 20 requests/min, 50 requests/day (up to 1000/day with $10 lifetime topup)
 
-#### How to Get Started
-
-1. Go to **[build.nvidia.com](https://build.nvidia.com)**
-2. Sign up (free, no credit card needed)
-3. Go to **[build.nvidia.com/explore/recommended](https://build.nvidia.com/explore/recommended)** to browse models
-4. Pick a model → click **"Build with this NIM"**
-5. Click **"Get API Key"** — copy it (starts with `nvapi-`)
-6. Set on Render:
-   ```
-   LLM_API_KEY=nvapi-xxxxxxxx
-   LLM_MODEL=nvidia/llama-3.1-8b-instruct
-   ```
-
-#### Available Free Models 🆓
-
-| Model | Best For | Rate Limit |
-|-------|----------|------------|
-| Llama 3.1 8B Instruct | General chat, coding | 40 RPM |
-| Llama 3.1 70B Instruct | Complex reasoning | 40 RPM |
-| Mistral NeMo 12B | Fast + capable | 40 RPM |
-| Mixtral 8x7B | Expert-level tasks | 40 RPM |
-| Gemma 2 9B | Lightweight, fast | 40 RPM |
-| Phi-3 Mini | Ultra-fast, small | 40 RPM |
-
-> ⚠️ **Rate limits:** Free tier allows ~40 requests per minute. More than enough for personal AI assistant use!
-
----
-
-### Puter.js 🟢 100% FREE
-
-**AI models with ZERO API keys.** Seriously.
-
-#### What is Puter.js?
-
-Puter.js is a free, open-source JavaScript library that gives you access to GPT-4o, Claude, Llama, Gemini, and more — **without any API keys or accounts**. It runs through Puter's cloud infrastructure.
-
-#### How to Use with RendClaw
-
-Puter.js works differently from traditional API providers — it's designed for client-side JavaScript. For RendClaw, you can use it via the **Puter CLI** or as an OpenAI-compatible proxy.
-
-**Option A: Puter CLI (Direct)**
-
-```bash
-# Install Puter CLI
-npm install -g puter
-
-# Use any model for free
-puter ai "Hello, how are you?" --model gpt-4o
-puter ai "Hello, how are you?" --model claude-sonnet-4-6
-puter ai "Hello, how are you?" --model llama-3.1-70b
+**Setup:**
+```
+LLM_API_KEY=sk-or-v1-xxxxxxxx                    # from openrouter.ai/keys
+LLM_MODEL=openrouter/google/gemma-4-31b-it:free
 ```
 
-**Option B: OpenAI-Compatible Mode**
+> 💡 **Best free pick:** Gemma 4 31B — latest Google model, completely free, great quality.
 
-Set in Render environment:
+---
+
+#### Groq ⚡ FASTEST
+
+[Groq](https://console.groq.com) runs models on custom LPU chips — **insanely fast** inference. Free tier is generous.
+
+| Model | `LLM_MODEL` value | Free Limit | Speed |
+|-------|-------------------|-----------|-------|
+| **Llama 4 Scout** 🆕 | `groq/llama-4-scout-17b-16e-instruct` | 1000 req/day | ⚡⚡⚡ |
+| **Llama 3.3 70B** | `groq/llama-3.3-70b-versatile` | 1000 req/day | ⚡⚡⚡ |
+| **Llama 3.1 8B** | `groq/llama-3.1-8b-instant` | 14,400 req/day | ⚡⚡⚡⚡ |
+| **Qwen 3 32B** | `groq/qwen/qwen3-32b` | 1000 req/day | ⚡⚡⚡ |
+| **GPT-OSS 120B** | `groq/openai/gpt-oss-120b` | 1000 req/day | ⚡⚡ |
+| **GPT-OSS 20B** | `groq/openai/gpt-oss-20b` | 1000 req/day | ⚡⚡⚡ |
+
+**Setup:**
+```
+LLM_API_KEY=gsk_xxxxxxxx                          # from console.groq.com
+LLM_MODEL=groq/llama-3.3-70b-versatile
+```
+
+> ⚡ **Why Groq?** Responses come back in under 1 second. Best free option for real-time chat.
+
+---
+
+#### Cerebras 🧠
+
+[Cerebras](https://cloud.cerebras.ai) offers free inference on their wafer-scale chips.
+
+| Model | Free Limit |
+|-------|-----------|
+| **Llama 3.1 8B** | 30 req/min, 14,400 req/day |
+| **GPT-OSS 120B** | 30 req/min, 14,400 req/day |
+
+**Setup:**
+```
+LLM_API_KEY=csk-xxxxxx                            # from cloud.cerebras.ai
+LLM_MODEL=cerebras/llama3.1-8b
+```
+
+---
+
+#### Google AI Studio 🟢 Generous Free Tier
+
+[Google AI Studio](https://aistudio.google.com) gives free access to Gemini models — **no credit card**.
+
+| Model | `LLM_MODEL` value | Free Limit |
+|-------|-------------------|-----------|
+| **Gemini 2.5 Flash** | `google/gemini-2.5-flash` | 250K tokens/min, 20 req/day |
+| **Gemini 2.5 Flash-Lite** | `google/gemini-2.5-flash-lite` | 250K tokens/min, 20 req/day |
+| **Gemini 3 Flash** 🆕 | `google/gemini-3.0-flash` | 250K tokens/min, 20 req/day |
+| **Gemma 3 27B** | `google/gemma-3-27b-it` | 15K tokens/min, 14,400 req/day |
+| **Gemma 3 12B** | `google/gemma-3-12b-it` | 15K tokens/min, 14,400 req/day |
+| **Gemma 3 4B** | `google/gemma-3-4b-it` | 15K tokens/min, 14,400 req/day |
+
+**Setup:**
+```
+LLM_API_KEY=AIzaxxxxxxxx                          # from aistudio.google.com/apikey
+LLM_MODEL=google/gemini-2.5-flash
+```
+
+> 💡 Gemma 3 models have **much higher free limits** (14,400 req/day) than Gemini models (20 req/day). Use Gemma for heavy usage.
+
+---
+
+#### NVIDIA NIM 🟢
+
+[NVIDIA NIM](https://build.nvidia.com) — free inference on NVIDIA GPUs. Phone verification required.
+
+**Rate limit:** 40 requests/minute
+
+**Setup:**
+```
+LLM_API_KEY=nvapi-xxxxxx                          # from build.nvidia.com
+LLM_MODEL=nvidia/llama-3.1-8b-instruct
+```
+
+Browse all models at [build.nvidia.com/models](https://build.nvidia.com/models).
+
+---
+
+#### HuggingFace Inference Providers 🤗
+
+[HuggingFace](https://huggingface.co) offers free serverless inference for models under 10GB.
+
+**Free credit:** $0.10/month (enough for light usage)
+
+**Setup:**
+```
+LLM_API_KEY=hf_xxxxxxxx                           # from huggingface.co/settings/tokens
+LLM_MODEL=huggingface/meta-llama/Llama-3.2-3B-Instruct
+```
+
+> Works with any model under 10GB on the HuggingFace Hub.
+
+---
+
+#### Cohere 🟢
+
+[Cohere](https://cohere.com) offers free access to their models.
+
+**Limit:** 20 requests/minute, 1000 requests/month
+
+| Model | Best For |
+|-------|----------|
+| Command A | General chat |
+| Command R | RAG, search |
+| Aya Expanse 32B | Multilingual |
+
+**Setup:**
+```
+LLM_API_KEY=co-xxxxxx                             # from dashboard.cohere.com
+LLM_MODEL=cohere/command-a
+```
+
+---
+
+#### GitHub Models 🐙
+
+[GitHub Models](https://github.com/marketplace/models) — free for all GitHub users. Just use your GitHub token.
+
+**Setup:**
+```
+LLM_API_KEY=ghp_xxxxxxxx                          # your GitHub token
+LLM_MODEL=github/gpt-4o
+```
+
+---
+
+#### Cloudflare Workers AI ☁️
+
+[Cloudflare](https://developers.cloudflare.com/workers-ai/) — free tier includes 10,000 neurons/day.
+
+**Setup:**
+```
+LLM_API_KEY=xxxxxx                                # from Cloudflare dashboard
+LLM_MODEL=cloudflare/@cf/meta/llama-3.1-8b-instruct
+```
+
+---
+
+#### Puter.js 🟢 ZERO API Keys
+
+[Puter.js](https://puter.com) — AI models with **no API keys at all**. Best for trying things out.
+
+| Available Models |
+|-----------------|
+| GPT-4o |
+| Claude Sonnet 4 |
+| Llama 3.1 70B |
+| Gemini 2.5 Flash |
+| Mixtral 8x22B |
+
+**Setup:**
 ```
 LLM_API_KEY=puter-free
 LLM_MODEL=puter/ai/gpt-4o
 ```
 
-#### Available Models (All Free!) 🆓
-
-| Model | Capability |
-|-------|-----------|
-| GPT-4o | OpenAI's best — free via Puter |
-| Claude Sonnet 4 | Anthropic's best — free via Puter |
-| Llama 3.1 70B | Meta's open model |
-| Gemini 2.5 Flash | Google's fast model |
-| Mixtral 8x22B | Mistral's expert model |
-
-> 🎯 **Why Puter?** No API keys, no billing, no rate limits for personal use. Perfect for trying out RendClaw before committing to a paid provider.
-
-> ⚠️ **Note:** Puter.js is primarily designed for browser/client-side use. For production server deployments like RendClaw, OpenRouter or direct provider keys are more reliable.
+> ⚠️ Puter.js is primarily designed for client-side use. For server deployments, OpenRouter or direct providers are more reliable.
 
 ---
 
-### OpenAI
+### 💰 Paid Providers (with Free Trials/Free Tiers)
 
-1. Go to **[platform.openai.com/api-keys](https://platform.openai.com/api-keys)**
-2. Create a new secret key
-3. Set on Render:
-   ```
-   LLM_API_KEY=sk-xxxxxxxx
-   LLM_MODEL=openai/gpt-4o
-   ```
+#### OpenAI
 
-### Anthropic
+**Free trial credits** for new accounts.
 
-1. Go to **[console.anthropic.com](https://console.anthropic.com)**
-2. Create an API key
-3. Set on Render:
-   ```
-   LLM_API_KEY=sk-ant-xxxxxxxx
-   LLM_MODEL=anthropic/claude-sonnet-4-6
-   ```
+| Key prefix | Model example |
+|-----------|---------------|
+| `sk-` | `openai/gpt-4o` |
 
-### Google
+**Setup:** [platform.openai.com/api-keys](https://platform.openai.com/api-keys)
+```
+LLM_API_KEY=sk-xxxxxx
+LLM_MODEL=openai/gpt-4o
+```
 
-1. Go to **[aistudio.google.com/apikey](https://aistudio.google.com/apikey)**
-2. Create an API key
-3. Set on Render:
-   ```
-   LLM_API_KEY=AIzaxxxxxxxx
-   LLM_MODEL=google/gemini-2.5-flash
-   ```
+#### Anthropic
 
-### DeepSeek
+| Key prefix | Model example |
+|-----------|---------------|
+| `sk-ant-` | `anthropic/claude-sonnet-4-6` |
 
-1. Go to **[platform.deepseek.com](https://platform.deepseek.com)**
-2. Create an API key
-3. Set on Render:
-   ```
-   LLM_API_KEY=sk-xxxxxxxx
-   LLM_MODEL=deepseek/deepseek-chat
-   ```
+**Setup:** [console.anthropic.com](https://console.anthropic.com)
+```
+LLM_API_KEY=sk-ant-xxxxxx
+LLM_MODEL=anthropic/claude-sonnet-4-6
+```
 
-### Mistral
+#### Mistral
 
-1. Go to **[console.mistral.ai](https://console.mistral.ai)**
-2. Create an API key
-3. Set on Render:
-   ```
-   LLM_API_KEY=xxxxxxxx
-   LLM_MODEL=mistral/mistral-small-latest
-   ```
+**Free tier:** 1 req/sec, 500K tokens/min, 1B tokens/month (requires phone verification)
 
-### Moonshot (Kimi)
+| Key prefix | Model example |
+|-----------|---------------|
+| `*` | `mistral/mistral-small-latest` |
 
-1. Go to **[platform.moonshot.cn](https://platform.moonshot.cn)**
-2. Create an API key
-3. Set on Render:
-   ```
-   LLM_API_KEY=sk-xxxxxxxx
-   LLM_MODEL=moonshot/kimi-k2.5
-   ```
+**Setup:** [console.mistral.ai](https://console.mistral.ai)
+```
+LLM_API_KEY=xxxxxx
+LLM_MODEL=mistral/mistral-small-latest
+```
 
-### xAI (Grok)
+#### DeepSeek
 
-1. Go to **[console.x.ai](https://console.x.ai)**
-2. Create an API key
-3. Set on Render:
-   ```
-   LLM_API_KEY=xai-xxxxxxxx
-   LLM_MODEL=xai/grok-4
-   ```
+Very cheap — $0.27/1M tokens for their best model.
+
+| Key prefix | Model example |
+|-----------|---------------|
+| `sk-` | `deepseek/deepseek-chat` |
+
+**Setup:** [platform.deepseek.com](https://platform.deepseek.com)
+```
+LLM_API_KEY=sk-xxxxxx
+LLM_MODEL=deepseek/deepseek-chat
+```
+
+#### Moonshot (Kimi)
+
+Free tier available.
+
+| Key prefix | Model example |
+|-----------|---------------|
+| `sk-` | `moonshot/kimi-k2.5` |
+
+**Setup:** [platform.moonshot.cn](https://platform.moonshot.cn)
+```
+LLM_API_KEY=sk-xxxxxx
+LLM_MODEL=moonshot/kimi-k2.5
+```
+
+#### xAI (Grok)
+
+| Key prefix | Model example |
+|-----------|---------------|
+| `xai-` | `xai/grok-4` |
+
+**Setup:** [console.x.ai](https://console.x.ai)
+```
+LLM_API_KEY=xai-xxxxxx
+LLM_MODEL=xai/grok-4
+```
+
+#### Together AI
+
+Some free models available, plus $5 in free credits on signup.
+
+**Setup:** [api.together.xyz](https://api.together.xyz)
+```
+LLM_API_KEY=xxxxxx
+LLM_MODEL=together/meta-llama/Llama-3.3-70B-Instruct-Turbo
+```
+
+#### Fireworks AI
+
+Free credits on signup.
+
+**Setup:** [fireworks.ai](https://fireworks.ai)
+```
+LLM_API_KEY=xxxxxx
+LLM_MODEL=fireworks/accounts/fireworks/models/llama-v3p3-70b-instruct
+```
 
 ---
 
 ### 💡 Recommended Setups
 
-#### 🆓 Completely Free
+#### 🆓 Best Completely Free (High Usage)
 ```
-LLM_API_KEY=nvapi-xxxxxxxx          # NVIDIA NIM
-LLM_MODEL=nvidia/llama-3.1-8b-instruct
-```
-Or:
-```
-LLM_API_KEY=sk-or-v1-xxxxxxxx       # OpenRouter
-LLM_MODEL=openrouter/meta-llama/llama-3.1-8b-instruct:free
+LLM_API_KEY=AIzaxxxxxxxx                          # Google AI Studio
+LLM_MODEL=google/gemma-3-27b-it                   # 14,400 requests/day free!
 ```
 
-#### 💰 Best Value
+#### 🆓 Best Completely Free (Quality)
 ```
-LLM_API_KEY=sk-or-v1-xxxxxxxx       # OpenRouter
-LLM_MODEL=openrouter/deepseek/deepseek-v3
+LLM_API_KEY=sk-or-v1-xxxxxx                       # OpenRouter
+LLM_MODEL=openrouter/google/gemma-4-31b-it:free   # Latest model, free
 ```
-DeepSeek V3 is ~$0.27/1M tokens — incredibly cheap for its quality.
 
-#### 🏆 Best Quality
+#### ⚡ Best Free (Speed)
 ```
-LLM_API_KEY=sk-or-v1-xxxxxxxx       # OpenRouter
-LLM_MODEL=openrouter/anthropic/claude-sonnet-4-6
+LLM_API_KEY=gsk_xxxxxxxx                          # Groq
+LLM_MODEL=groq/llama-3.3-70b-versatile           # Sub-second responses
+```
+
+#### 🤯 Best Free (Power)
+```
+LLM_API_KEY=sk-or-v1-xxxxxx                       # OpenRouter
+LLM_MODEL=openrouter/nousresearch/hermes-3-llama-3.1-405b:free  # 405B params, FREE!
+```
+
+#### 💰 Best Value (Paid)
+```
+LLM_API_KEY=sk-or-v1-xxxxxx                       # OpenRouter
+LLM_MODEL=openrouter/deepseek/deepseek-v3         # $0.27/1M tokens
+```
+
+#### 🏆 Best Quality (Paid)
+```
+LLM_API_KEY=sk-or-v1-xxxxxx                       # OpenRouter
+LLM_MODEL=openrouter/anthropic/claude-sonnet-4-6  # Top quality
 ```
 
 #### 🔄 Switch Models Anytime
-Just change `LLM_MODEL` in Render dashboard → Environment → Save → service restarts with new model. Takes 30 seconds.
+Just change `LLM_MODEL` in Render dashboard → Environment → Save → auto-restarts in 30 seconds. Try different models until you find your favorite!
 
 ---
 
