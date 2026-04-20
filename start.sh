@@ -80,9 +80,11 @@ validate_secrets() {
         log_success "LLM_API_KEY set (${#LLM_API_KEY} chars)"
     fi
 
+    # LLM_MODEL — use default if not set (user might leave blank in deploy form)
     if [ -z "${LLM_MODEL:-}" ]; then
-        log_error "LLM_MODEL is required! E.g., openai/gpt-4o"
-        missing=1
+        export LLM_MODEL="openai/gpt-4o"
+        log_warn "LLM_MODEL not set — using default: $LLM_MODEL"
+        log_info "You can change this anytime in Render dashboard → Environment"
     else
         log_success "LLM_MODEL set: $LLM_MODEL"
     fi

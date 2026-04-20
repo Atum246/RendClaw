@@ -3,62 +3,58 @@
 # Deploy OpenClaw on Render with one click
 # ============================================================
 
+# How Render shows env vars in the deploy form:
+#   sync: false          → shows as blank field for user to fill
+#   value: "default"     → hidden, uses default (user can change later in dashboard)
+#   generateValue: true  → hidden, Render auto-generates
+
 services:
-  # ─── Main RendClaw Service ─────────────────────────────────
   - type: web
     name: rendclaw
     runtime: docker
     dockerfilePath: ./Dockerfile
-    plan: free                    # Free tier! 🆓
-    autoDeploy: true              # Auto-deploy on git push
+    plan: free
+    autoDeploy: true
     envVars:
-      # Required (user must set these)
+      # ─── User MUST fill these in the deploy form ─────────
       - key: LLM_API_KEY
         sync: false
-      - key: LLM_MODEL
-        value: "anthropic/claude-sonnet-4-6"
-      - key: GATEWAY_TOKEN
-        generateValue: true       # Render auto-generates if not set
+      - key: GITHUB_GIST_TOKEN
+        sync: false
 
-      # Platform detection
+      # ─── Pre-filled defaults (user can change in dashboard after deploy) ───
+      - key: LLM_MODEL
+        sync: false
+      - key: GATEWAY_TOKEN
+        generateValue: true
       - key: NEOCLAW_PLATFORM
         value: "render"
-
-      # Render-specific
       - key: RENDER_EXTERNAL_URL
         fromService:
           type: web
           name: rendclaw
           property: host
 
-      # Backup — GitHub Gist (REQUIRED for Render free tier — no persistent disk!)
-      - key: GITHUB_GIST_TOKEN
-        sync: false
-        # ⚠️ Set this! Without it, your workspace is lost on every restart.
-        # Get a token at https://github.com/settings/tokens with 'gist' scope.
-      - key: GITHUB_GIST_ID
-        sync: false
+      # ─── Backup (auto-configured) ───────────────────────
       - key: BACKUP_ENABLED
         value: "true"
       - key: SYNC_INTERVAL
         value: "120"
 
-      # Optional — uncomment and set as needed
-      # - key: TELEGRAM_BOT_TOKEN
-      #   sync: false
-      # - key: TELEGRAM_USER_ID
-      #   sync: false
-      # - key: WHATSAPP_ENABLED
-      #   value: "false"
-      # - key: DISCORD_TOKEN
-      #   sync: false
-      # - key: WEBHOOK_URL
-      #   sync: false
-      # - key: UPTIMEROBOT_API_KEY
-      #   sync: false
+      # ─── Optional channels (set in Render dashboard after deploy) ───
+      - key: TELEGRAM_BOT_TOKEN
+        value: ""
+      - key: TELEGRAM_USER_ID
+        value: ""
+      - key: WHATSAPP_ENABLED
+        value: "false"
+      - key: DISCORD_TOKEN
+        value: ""
 
-    # Health check
+      # ─── Optional monitoring (set in Render dashboard after deploy) ───
+      - key: UPTIMEROBOT_API_KEY
+        value: ""
+      - key: CRONJOB_ORG_KEY
+        value: ""
+
     healthCheckPath: /health
-
-    # NOTE: No disk block — Render free tier doesn't support persistent disks.
-    # Workspace is backed up via workspace-sync.py (GitHub Gist, HF, or S3).
