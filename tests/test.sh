@@ -62,7 +62,7 @@ if grep -q "EXPOSE 10000" "$PROJECT_DIR/Dockerfile"; then pass "Dockerfile — e
 if grep -q "services:" "$PROJECT_DIR/render.yaml"; then pass "render.yaml — has services"; else fail "render.yaml — no services"; fi
 if grep -q "plan: free" "$PROJECT_DIR/render.yaml"; then pass "render.yaml — free plan"; else warn "render.yaml — no free plan"; fi
 if grep -q "autoDeploy: true" "$PROJECT_DIR/render.yaml"; then pass "render.yaml — auto-deploy"; else warn "render.yaml — no auto-deploy"; fi
-if grep -q "disk:" "$PROJECT_DIR/render.yaml"; then pass "render.yaml — persistent disk"; else warn "render.yaml — no disk"; fi
+if grep -q "disk:" "$PROJECT_DIR/render.yaml"; then warn "render.yaml — has disk block (not supported on free tier!)"; else pass "render.yaml — no disk (free tier compatible)"; fi
 
 # ─── Environment ────────────────────────────────────────────
 section "🔧 Environment"

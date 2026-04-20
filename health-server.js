@@ -42,8 +42,8 @@ function checkGatewayHealth() {
 
 function readSyncStatus() {
   try {
-    if (fs.existsSync('/tmp/neoclaw-sync-state.json')) {
-      const s = JSON.parse(fs.readFileSync('/tmp/neoclaw-sync-state.json', 'utf-8'));
+    if (fs.existsSync('/tmp/rendclaw-sync-state.json')) {
+      const s = JSON.parse(fs.readFileSync('/tmp/rendclaw-sync-state.json', 'utf-8'));
       return { status: s.last_sync ? 'success' : 'configured', timestamp: s.last_sync ? new Date(s.last_sync * 1000).toLocaleString() : null, message: s.sync_count ? s.sync_count + ' syncs completed' : 'Waiting for first sync...' };
     }
   } catch {}
