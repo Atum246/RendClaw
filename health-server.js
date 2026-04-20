@@ -59,7 +59,7 @@ async function handleUptimeRobotSetup(req, res) {
     try {
       const { apiKey } = JSON.parse(body);
       if (!apiKey) { res.writeHead(400); res.end(JSON.stringify({ error: 'API key required' })); return; }
-      const extUrl = RENDER_URL ? `https://${RENDER_URL}` : (process.env.NEOCLAW_EXTERNAL_URL || '');
+      const extUrl = RENDER_URL ? (RENDER_URL.startsWith('http') ? RENDER_URL : `https://${RENDER_URL}`) : (process.env.NEOCLAW_EXTERNAL_URL || '');
       if (!extUrl) { res.writeHead(400); res.end(JSON.stringify({ error: 'Could not determine service URL' })); return; }
 
       const existing = await utrRequest(apiKey, 'getMonitors', {});
