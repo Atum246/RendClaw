@@ -290,151 +290,155 @@ Your workspace resets on every restart until you add this token. No data is lost
 
 ## 🤖 AI Model Providers
 
-You can use **any AI provider** with RendClaw. Here's everything you need — including **completely free options**.
+**Every free AI provider on Earth.** No excuses, no missed options.
 
 ---
 
-### 🆓 Free Providers (No Payment Required)
+### 🌍 Master Free Provider List
 
-These providers are **100% free** — no credit card, no trial, just sign up and go.
+| # | Provider | 🌐 Region | Free Limit | Models | Setup |
+|---|----------|-----------|-----------|--------|-------|
+| 1 | **OpenRouter** 🔥 | 🌍 Global | 50 req/day | 24+ free models | [openrouter.ai/keys](https://openrouter.ai/keys) |
+| 2 | **Groq** ⚡ | 🌍 Global | 14,400 req/day | Llama 4, Qwen3, GPT-OSS | [console.groq.com](https://console.groq.com) |
+| 3 | **Google AI Studio** | 🌍 Global | 14,400 req/day | Gemini, Gemma 3 & 4 | [aistudio.google.com](https://aistudio.google.com) |
+| 4 | **Cerebras** | 🌍 Global | 14,400 req/day | Llama 3.1, GPT-OSS | [cloud.cerebras.ai](https://cloud.cerebras.ai) |
+| 5 | **NVIDIA NIM** | 🌍 Global | 40 req/min | Llama, Mistral, Mixtral | [build.nvidia.com](https://build.nvidia.com) |
+| 6 | **HuggingFace** 🤗 | 🌍 Global | $0.10/mo credits | 70k+ models | [huggingface.co](https://huggingface.co) |
+| 7 | **Cohere** | 🌍 Global | 1,000 req/month | Command A, Aya | [dashboard.cohere.com](https://dashboard.cohere.com) |
+| 8 | **GitHub Models** 🐙 | 🌍 Global | Free for GitHub users | GPT-4o, Llama, more | [github.com/marketplace/models](https://github.com/marketplace/models) |
+| 9 | **Cloudflare Workers AI** | 🌍 Global | 10,000 neurons/day | Llama, Mistral | [cloudflare.com](https://developers.cloudflare.com/workers-ai/) |
+| 10 | **Puter.js** | 🌍 Global | Unlimited, NO API key | GPT-4o, Claude, Llama | [puter.com](https://puter.com) |
+| 11 | **Bytez** 🆕 | 🌍 Global | Free inference | 70k+ models | [bytez.com](https://bytez.com) |
+| 12 | **Mistral** | 🇫🇷 France | 1B tokens/month | Mistral models | [console.mistral.ai](https://console.mistral.ai) |
+| 13 | **Vercel AI Gateway** | 🌍 Global | $5/month credits | Routes to all providers | [vercel.com](https://vercel.com/docs/ai-gateway) |
+| 14 | **OpenCode Zen** | 🌍 Global | Free curated models | MiniMax, Arcee | [opencode.ai](https://opencode.ai/docs/zen/) |
+| 15 | **Qwen API** 🇨🇳 | 🇨🇳 China | 1M free tokens | Qwen models | [dashscope.aliyun.com](https://dashscope.aliyun.com) |
+| 16 | **ModelScope** 🇨🇳 | 🇨🇳 China | 2,000 free calls | Qwen, DeepSeek, more | [modelscope.cn](https://modelscope.cn) |
+| 17 | **Baidu ERNIE** 🇨🇳 | 🇨🇳 China | 🆓 Completely free! | ERNIE 4.5 | [console.bce.baidu.com](https://console.bce.baidu.com) |
+| 18 | **ByteDance Doubao** 🇨🇳 | 🇨🇳 China | Free tier | Doubao models | [console.volcengine.com](https://console.volcengine.com) |
+| 19 | **Zhipu GLM** 🇨🇳 | 🇨🇳 China | Free tier | ChatGLM, GLM-4 | [open.bigmodel.cn](https://open.bigmodel.cn) |
+| 20 | **MiniMax** 🇨🇳 | 🇨🇳 China | Free tier | MiniMax models | [api.minimax.chat](https://api.minimax.chat) |
 
 ---
 
-#### OpenRouter Free Models 🔥
+### 🆓 Free Providers — Detailed Setup
 
-[OpenRouter](https://openrouter.ai) gives you **one API key** for 40+ providers. Many models are completely free.
+---
 
-| Model | `LLM_MODEL` value | Size | Best For |
-|-------|-------------------|------|----------|
-| **Gemma 4 31B** 🆕 | `openrouter/google/gemma-4-31b-it:free` | 31B | General, coding, reasoning |
-| **Gemma 4 26B (MoE)** 🆕 | `openrouter/google/gemma-4-26b-a4b-it:free` | 26B | Fast + capable |
-| **Gemma 3 27B** | `openrouter/google/gemma-3-27b-it:free` | 27B | Balanced, great quality |
-| **Gemma 3 12B** | `openrouter/google/gemma-3-12b-it:free` | 12B | Fast, good quality |
-| **Gemma 3 4B** | `openrouter/google/gemma-3-4b-it:free` | 4B | Ultra-fast responses |
-| **Llama 3.3 70B** | `openrouter/meta-llama/llama-3.3-70b-instruct:free` | 70B | Complex reasoning |
-| **Hermes 3 405B** | `openrouter/nousresearch/hermes-3-llama-3.1-405b:free` | 405B | 🤯 Largest free model |
-| **Qwen3 Coder** | `openrouter/qwen/qwen3-coder:free` | — | Coding specialist |
-| **Qwen3 80B (MoE)** | `openrouter/qwen/qwen3-next-80b-a3b-instruct:free` | 80B | Fast reasoning |
-| **GPT-OSS 120B** | `openrouter/openai/gpt-oss-120b:free` | 120B | Open-source GPT |
-| **GPT-OSS 20B** | `openrouter/openai/gpt-oss-20b:free` | 20B | Fast open GPT |
-| **GLM 4.5 Air** | `openrouter/z-ai/glm-4.5-air:free` | — | Chinese + English |
-| **Nemotron Super 120B** | `openrouter/nvidia/nemotron-3-super-120b-a12b:free` | 120B | Massive context |
-| **Nemotron Nano 9B** | `openrouter/nvidia/nemotron-nano-9b-v2:free` | 9B | Compact + fast |
-| **MiniMax M2.5** | `openrouter/minimax/minimax-m2.5:free` | — | Chinese language |
-| **Llama 3.2 3B** | `openrouter/meta-llama/llama-3.2-3b-instruct:free` | 3B | Ultra-lightweight |
+#### 1. OpenRouter Free Models 🔥
 
-**Limits:** 20 requests/min, 50 requests/day (up to 1000/day with $10 lifetime topup)
+**One API key. 24+ free models. The best free gateway.**
 
-**Setup:**
+| Model | `LLM_MODEL` value | Size |
+|-------|-------------------|------|
+| **Gemma 4 31B** 🆕 | `openrouter/google/gemma-4-31b-it:free` | 31B |
+| **Gemma 4 26B (MoE)** 🆕 | `openrouter/google/gemma-4-26b-a4b-it:free` | 26B |
+| **Gemma 3 27B** | `openrouter/google/gemma-3-27b-it:free` | 27B |
+| **Gemma 3n E4B** | `openrouter/google/gemma-3n-e4b-it:free` | 4B |
+| **Gemma 3n E2B** | `openrouter/google/gemma-3n-e2b-it:free` | 2B |
+| **Llama 3.3 70B** | `openrouter/meta-llama/llama-3.3-70b-instruct:free` | 70B |
+| **Hermes 3 405B** | `openrouter/nousresearch/hermes-3-llama-3.1-405b:free` | 405B |
+| **Qwen3 Coder** | `openrouter/qwen/qwen3-coder:free` | — |
+| **Qwen3 80B (MoE)** | `openrouter/qwen/qwen3-next-80b-a3b-instruct:free` | 80B |
+| **GPT-OSS 120B** | `openrouter/openai/gpt-oss-120b:free` | 120B |
+| **GPT-OSS 20B** | `openrouter/openai/gpt-oss-20b:free` | 20B |
+| **GLM 4.5 Air** | `openrouter/z-ai/glm-4.5-air:free` | — |
+| **Nemotron Super 120B** | `openrouter/nvidia/nemotron-3-super-120b-a12b:free` | 120B |
+| **Nemotron Nano 9B** | `openrouter/nvidia/nemotron-nano-9b-v2:free` | 9B |
+| **Nemotron Nano 30B** | `openrouter/nvidia/nemotron-3-nano-30b-a3b:free` | 30B |
+| **MiniMax M2.5** | `openrouter/minimax/minimax-m2.5:free` | — |
+| **Dolphin Mistral 24B** | `openrouter/cognitivecomputations/dolphin-mistral-24b-venice-edition:free` | 24B |
+| **Trinity Large** | `openrouter/arcee-ai/trinity-large-preview:free` | — |
+| **Liquid LFM 1.2B** | `openrouter/liquid/lfm-2.5-1.2b-instruct:free` | 1.2B |
+
+**Limits:** 20 req/min, 50 req/day (1000/day with $10 lifetime topup)
+
 ```
-LLM_API_KEY=sk-or-v1-xxxxxxxx                    # from openrouter.ai/keys
+LLM_API_KEY=sk-or-v1-xxxxxxxx
 LLM_MODEL=openrouter/google/gemma-4-31b-it:free
 ```
 
-> 💡 **Best free pick:** Gemma 4 31B — latest Google model, completely free, great quality.
-
 ---
 
-#### Groq ⚡ FASTEST
+#### 2. Groq ⚡ FASTEST ON EARTH
 
-[Groq](https://console.groq.com) runs models on custom LPU chips — **insanely fast** inference. Free tier is generous.
+**Sub-second responses. Free tier is huge.**
 
-| Model | `LLM_MODEL` value | Free Limit | Speed |
-|-------|-------------------|-----------|-------|
-| **Llama 4 Scout** 🆕 | `groq/llama-4-scout-17b-16e-instruct` | 1000 req/day | ⚡⚡⚡ |
-| **Llama 3.3 70B** | `groq/llama-3.3-70b-versatile` | 1000 req/day | ⚡⚡⚡ |
-| **Llama 3.1 8B** | `groq/llama-3.1-8b-instant` | 14,400 req/day | ⚡⚡⚡⚡ |
-| **Qwen 3 32B** | `groq/qwen/qwen3-32b` | 1000 req/day | ⚡⚡⚡ |
-| **GPT-OSS 120B** | `groq/openai/gpt-oss-120b` | 1000 req/day | ⚡⚡ |
-| **GPT-OSS 20B** | `groq/openai/gpt-oss-20b` | 1000 req/day | ⚡⚡⚡ |
+| Model | `LLM_MODEL` value | Free Limit |
+|-------|-------------------|-----------|
+| **Llama 4 Scout** 🆕 | `groq/llama-4-scout-17b-16e-instruct` | 1,000 req/day |
+| **Llama 3.3 70B** | `groq/llama-3.3-70b-versatile` | 1,000 req/day |
+| **Llama 3.1 8B** | `groq/llama-3.1-8b-instant` | 14,400 req/day |
+| **Qwen 3 32B** | `groq/qwen/qwen3-32b` | 1,000 req/day |
+| **GPT-OSS 120B** | `groq/openai/gpt-oss-120b` | 1,000 req/day |
+| **GPT-OSS 20B** | `groq/openai/gpt-oss-20b` | 1,000 req/day |
 
-**Setup:**
 ```
-LLM_API_KEY=gsk_xxxxxxxx                          # from console.groq.com
+LLM_API_KEY=gsk_xxxxxxxx
 LLM_MODEL=groq/llama-3.3-70b-versatile
 ```
 
-> ⚡ **Why Groq?** Responses come back in under 1 second. Best free option for real-time chat.
+---
+
+#### 3. Google AI Studio 🟢
+
+**Generous free tier. No credit card.**
+
+| Model | Free Limit |
+|-------|-----------|
+| **Gemini 2.5 Flash** | 250K tokens/min, 20 req/day |
+| **Gemini 3 Flash** 🆕 | 250K tokens/min, 20 req/day |
+| **Gemma 3 27B** | 15K tokens/min, **14,400 req/day** |
+| **Gemma 3 12B** | 15K tokens/min, **14,400 req/day** |
+| **Gemma 3 4B** | 15K tokens/min, **14,400 req/day** |
+| **Gemma 3 1B** | 15K tokens/min, **14,400 req/day** |
+
+```
+LLM_API_KEY=AIzaxxxxxxxx
+LLM_MODEL=google/gemma-3-27b-it
+```
 
 ---
 
-#### Cerebras 🧠
-
-[Cerebras](https://cloud.cerebras.ai) offers free inference on their wafer-scale chips.
+#### 4. Cerebras 🧠
 
 | Model | Free Limit |
 |-------|-----------|
 | **Llama 3.1 8B** | 30 req/min, 14,400 req/day |
 | **GPT-OSS 120B** | 30 req/min, 14,400 req/day |
 
-**Setup:**
 ```
-LLM_API_KEY=csk-xxxxxx                            # from cloud.cerebras.ai
+LLM_API_KEY=csk-xxxxxx
 LLM_MODEL=cerebras/llama3.1-8b
 ```
 
 ---
 
-#### Google AI Studio 🟢 Generous Free Tier
+#### 5. NVIDIA NIM 🟢
 
-[Google AI Studio](https://aistudio.google.com) gives free access to Gemini models — **no credit card**.
+Free inference on NVIDIA GPUs. Phone verification required. 40 req/min.
 
-| Model | `LLM_MODEL` value | Free Limit |
-|-------|-------------------|-----------|
-| **Gemini 2.5 Flash** | `google/gemini-2.5-flash` | 250K tokens/min, 20 req/day |
-| **Gemini 2.5 Flash-Lite** | `google/gemini-2.5-flash-lite` | 250K tokens/min, 20 req/day |
-| **Gemini 3 Flash** 🆕 | `google/gemini-3.0-flash` | 250K tokens/min, 20 req/day |
-| **Gemma 3 27B** | `google/gemma-3-27b-it` | 15K tokens/min, 14,400 req/day |
-| **Gemma 3 12B** | `google/gemma-3-12b-it` | 15K tokens/min, 14,400 req/day |
-| **Gemma 3 4B** | `google/gemma-3-4b-it` | 15K tokens/min, 14,400 req/day |
-
-**Setup:**
 ```
-LLM_API_KEY=AIzaxxxxxxxx                          # from aistudio.google.com/apikey
-LLM_MODEL=google/gemini-2.5-flash
-```
-
-> 💡 Gemma 3 models have **much higher free limits** (14,400 req/day) than Gemini models (20 req/day). Use Gemma for heavy usage.
-
----
-
-#### NVIDIA NIM 🟢
-
-[NVIDIA NIM](https://build.nvidia.com) — free inference on NVIDIA GPUs. Phone verification required.
-
-**Rate limit:** 40 requests/minute
-
-**Setup:**
-```
-LLM_API_KEY=nvapi-xxxxxx                          # from build.nvidia.com
+LLM_API_KEY=nvapi-xxxxxx
 LLM_MODEL=nvidia/llama-3.1-8b-instruct
 ```
 
-Browse all models at [build.nvidia.com/models](https://build.nvidia.com/models).
+Browse: [build.nvidia.com/models](https://build.nvidia.com/models)
 
 ---
 
-#### HuggingFace Inference Providers 🤗
+#### 6. HuggingFace Inference Providers 🤗
 
-[HuggingFace](https://huggingface.co) offers free serverless inference for models under 10GB.
+Free serverless inference for models under 10GB. $0.10/mo credits.
 
-**Free credit:** $0.10/month (enough for light usage)
-
-**Setup:**
 ```
-LLM_API_KEY=hf_xxxxxxxx                           # from huggingface.co/settings/tokens
+LLM_API_KEY=hf_xxxxxxxx
 LLM_MODEL=huggingface/meta-llama/Llama-3.2-3B-Instruct
 ```
 
-> Works with any model under 10GB on the HuggingFace Hub.
-
 ---
 
-#### Cohere 🟢
-
-[Cohere](https://cohere.com) offers free access to their models.
-
-**Limit:** 20 requests/minute, 1000 requests/month
+#### 7. Cohere 🟢
 
 | Model | Best For |
 |-------|----------|
@@ -442,204 +446,285 @@ LLM_MODEL=huggingface/meta-llama/Llama-3.2-3B-Instruct
 | Command R | RAG, search |
 | Aya Expanse 32B | Multilingual |
 
-**Setup:**
+**Limit:** 20 req/min, 1,000 req/month
+
 ```
-LLM_API_KEY=co-xxxxxx                             # from dashboard.cohere.com
+LLM_API_KEY=co-xxxxxx
 LLM_MODEL=cohere/command-a
 ```
 
 ---
 
-#### GitHub Models 🐙
+#### 8. GitHub Models 🐙
 
-[GitHub Models](https://github.com/marketplace/models) — free for all GitHub users. Just use your GitHub token.
+Free for all GitHub users. Just use your GitHub token!
 
-**Setup:**
 ```
-LLM_API_KEY=ghp_xxxxxxxx                          # your GitHub token
+LLM_API_KEY=ghp_xxxxxxxx
 LLM_MODEL=github/gpt-4o
 ```
 
 ---
 
-#### Cloudflare Workers AI ☁️
+#### 9. Cloudflare Workers AI ☁️
 
-[Cloudflare](https://developers.cloudflare.com/workers-ai/) — free tier includes 10,000 neurons/day.
+10,000 neurons/day free.
 
-**Setup:**
 ```
-LLM_API_KEY=xxxxxx                                # from Cloudflare dashboard
+LLM_API_KEY=xxxxxx
 LLM_MODEL=cloudflare/@cf/meta/llama-3.1-8b-instruct
 ```
 
 ---
 
-#### Puter.js 🟢 ZERO API Keys
+#### 10. Puter.js 🟢 NO API KEYS
 
-[Puter.js](https://puter.com) — AI models with **no API keys at all**. Best for trying things out.
+GPT-4o, Claude, Llama, Gemini — **zero setup**.
 
-| Available Models |
-|-----------------|
-| GPT-4o |
-| Claude Sonnet 4 |
-| Llama 3.1 70B |
-| Gemini 2.5 Flash |
-| Mixtral 8x22B |
-
-**Setup:**
 ```
 LLM_API_KEY=puter-free
 LLM_MODEL=puter/ai/gpt-4o
 ```
 
-> ⚠️ Puter.js is primarily designed for client-side use. For server deployments, OpenRouter or direct providers are more reliable.
+---
+
+#### 11. Bytez 🆕
+
+70,000+ open-source models with free inference API. Deploy any HuggingFace model in 3 lines.
+
+```
+LLM_API_KEY=your-bytez-key                          # from bytez.com
+LLM_MODEL=bytez/meta-llama/Llama-3.1-8B-Instruct
+```
+
+> 💡 Unique: Bytez lets you run models that aren't available anywhere else for free.
 
 ---
 
-### 💰 Paid Providers (with Free Trials/Free Tiers)
+#### 12. Mistral La Plateforme 🇫🇷
 
-#### OpenAI
+Free tier: 1 req/sec, 500K tokens/min, 1B tokens/month. Phone verification required.
 
-**Free trial credits** for new accounts.
-
-| Key prefix | Model example |
-|-----------|---------------|
-| `sk-` | `openai/gpt-4o` |
-
-**Setup:** [platform.openai.com/api-keys](https://platform.openai.com/api-keys)
-```
-LLM_API_KEY=sk-xxxxxx
-LLM_MODEL=openai/gpt-4o
-```
-
-#### Anthropic
-
-| Key prefix | Model example |
-|-----------|---------------|
-| `sk-ant-` | `anthropic/claude-sonnet-4-6` |
-
-**Setup:** [console.anthropic.com](https://console.anthropic.com)
-```
-LLM_API_KEY=sk-ant-xxxxxx
-LLM_MODEL=anthropic/claude-sonnet-4-6
-```
-
-#### Mistral
-
-**Free tier:** 1 req/sec, 500K tokens/min, 1B tokens/month (requires phone verification)
-
-| Key prefix | Model example |
-|-----------|---------------|
-| `*` | `mistral/mistral-small-latest` |
-
-**Setup:** [console.mistral.ai](https://console.mistral.ai)
 ```
 LLM_API_KEY=xxxxxx
 LLM_MODEL=mistral/mistral-small-latest
 ```
 
-#### DeepSeek
+---
 
-Very cheap — $0.27/1M tokens for their best model.
+#### 13. Vercel AI Gateway
 
-| Key prefix | Model example |
-|-----------|---------------|
-| `sk-` | `deepseek/deepseek-chat` |
+$5/month in free credits. Routes to OpenAI, Anthropic, Google, and more.
 
-**Setup:** [platform.deepseek.com](https://platform.deepseek.com)
-```
-LLM_API_KEY=sk-xxxxxx
-LLM_MODEL=deepseek/deepseek-chat
-```
-
-#### Moonshot (Kimi)
-
-Free tier available.
-
-| Key prefix | Model example |
-|-----------|---------------|
-| `sk-` | `moonshot/kimi-k2.5` |
-
-**Setup:** [platform.moonshot.cn](https://platform.moonshot.cn)
-```
-LLM_API_KEY=sk-xxxxxx
-LLM_MODEL=moonshot/kimi-k2.5
-```
-
-#### xAI (Grok)
-
-| Key prefix | Model example |
-|-----------|---------------|
-| `xai-` | `xai/grok-4` |
-
-**Setup:** [console.x.ai](https://console.x.ai)
-```
-LLM_API_KEY=xai-xxxxxx
-LLM_MODEL=xai/grok-4
-```
-
-#### Together AI
-
-Some free models available, plus $5 in free credits on signup.
-
-**Setup:** [api.together.xyz](https://api.together.xyz)
 ```
 LLM_API_KEY=xxxxxx
-LLM_MODEL=together/meta-llama/Llama-3.3-70B-Instruct-Turbo
-```
-
-#### Fireworks AI
-
-Free credits on signup.
-
-**Setup:** [fireworks.ai](https://fireworks.ai)
-```
-LLM_API_KEY=xxxxxx
-LLM_MODEL=fireworks/accounts/fireworks/models/llama-v3p3-70b-instruct
+LLM_MODEL=vercel/openai/gpt-4o
 ```
 
 ---
 
-### 💡 Recommended Setups
+#### 14. OpenCode Zen
 
-#### 🆓 Best Completely Free (High Usage)
-```
-LLM_API_KEY=AIzaxxxxxxxx                          # Google AI Studio
-LLM_MODEL=google/gemma-3-27b-it                   # 14,400 requests/day free!
-```
+Curated free models. OpenAI-compatible.
 
-#### 🆓 Best Completely Free (Quality)
 ```
-LLM_API_KEY=sk-or-v1-xxxxxx                       # OpenRouter
-LLM_MODEL=openrouter/google/gemma-4-31b-it:free   # Latest model, free
+LLM_API_KEY=xxxxxx                                  # from opencode.ai
+LLM_MODEL=opencode/big-pickle-stealth
 ```
 
-#### ⚡ Best Free (Speed)
+---
+
+### 🇨🇳 Chinese Free Providers
+
+These providers are based in China and offer generous free tiers. OpenAI-compatible endpoints available.
+
+---
+
+#### 15. Qwen API (Alibaba) 🇨🇳
+
+**1 MILLION free tokens** for new users. Qwen models are world-class.
+
+| Model | Notes |
+|-------|-------|
+| Qwen2.5 72B | Top-tier reasoning |
+| Qwen2.5 Coder | Best Chinese coding model |
+| Qwen2.5 VL | Vision-language |
+| Qwen3 | Latest generation |
+
+**Setup:** [dashscope.aliyun.com](https://dashscope.aliyun.com)
 ```
-LLM_API_KEY=gsk_xxxxxxxx                          # Groq
-LLM_MODEL=groq/llama-3.3-70b-versatile           # Sub-second responses
+LLM_API_KEY=sk-xxxxxx                               # from Alibaba Cloud
+LLM_MODEL=qwen/qwen2.5-72b-instruct
 ```
 
-#### 🤯 Best Free (Power)
+> 💡 International users: sign up at [Alibaba Cloud International](https://www.alibabacloud.com/) — same free credits.
+
+---
+
+#### 16. ModelScope (Alibaba) 🇨🇳
+
+**2,000 free API calls.** Access to Qwen, DeepSeek, and hundreds of community models.
+
+| Models Available |
+|-----------------|
+| Qwen2.5 (all sizes) |
+| DeepSeek V3, R1 |
+| ChatGLM |
+| Baichuan |
+| Yi |
+| InternLM |
+
+**Setup:** [modelscope.cn](https://modelscope.cn) → Create API Key
 ```
-LLM_API_KEY=sk-or-v1-xxxxxx                       # OpenRouter
-LLM_MODEL=openrouter/nousresearch/hermes-3-llama-3.1-405b:free  # 405B params, FREE!
+LLM_API_KEY=xxxxxx                                  # from ModelScope
+LLM_MODEL=modelscope/Qwen/Qwen2.5-72B-Instruct
 ```
 
-#### 💰 Best Value (Paid)
+> OpenAI-compatible endpoint: `https://api-inference.modelscope.cn/v1`
+
+---
+
+#### 17. Baidu ERNIE Bot 🇨🇳 COMPLETELY FREE
+
+**Since April 2025, ERNIE Bot is 100% free for everyone.** No limits announced.
+
+| Model | Notes |
+|-------|-------|
+| ERNIE 4.5 | Baidu's flagship |
+| ERNIE 4.0 | Previous gen |
+| ERNIE 3.5 | Lightweight |
+
+**Setup:** [console.bce.baidu.com](https://console.bce.baidu.com)
 ```
-LLM_API_KEY=sk-or-v1-xxxxxx                       # OpenRouter
-LLM_MODEL=openrouter/deepseek/deepseek-v3         # $0.27/1M tokens
+LLM_API_KEY=xxxxxx
+LLM_MODEL=baidu/ernie-4.5
 ```
 
-#### 🏆 Best Quality (Paid)
+---
+
+#### 18. ByteDance Doubao 🇨🇳
+
+Free tier available. Doubao is ByteDance's (TikTok's parent) AI model.
+
+| Models | Notes |
+|--------|-------|
+| Doubao Pro | Flagship |
+| Doubao Lite | Fast, lightweight |
+| Doubao Seed | Latest |
+
+**Setup:** [console.volcengine.com](https://console.volcengine.com)
 ```
-LLM_API_KEY=sk-or-v1-xxxxxx                       # OpenRouter
-LLM_MODEL=openrouter/anthropic/claude-sonnet-4-6  # Top quality
+LLM_API_KEY=xxxxxx
+LLM_MODEL=bytedance/doubao-pro-256k
+```
+
+---
+
+#### 19. Zhipu GLM 🇨🇳
+
+Free tier for ChatGLM models. Great for Chinese + English.
+
+| Models | Notes |
+|--------|-------|
+| GLM-4 | Flagship |
+| GLM-4-9B | Open source |
+| GLM-4V | Vision |
+| CodeGeeX4 | Coding |
+
+**Setup:** [open.bigmodel.cn](https://open.bigmodel.cn)
+```
+LLM_API_KEY=xxxxxx
+LLM_MODEL=zhipu/glm-4
+```
+
+---
+
+#### 20. MiniMax 🇨🇳
+
+Free tier available. Known for long-context and speech.
+
+| Models | Notes |
+|--------|-------|
+| MiniMax M2.5 | Flagship |
+| abab6.5 | Long context |
+
+**Setup:** [api.minimax.chat](https://api.minimax.chat)
+```
+LLM_API_KEY=xxxxxx
+LLM_MODEL=minimax/abab6.5-chat
+```
+
+---
+
+### 🎁 Providers with Free Trial Credits
+
+These give you **free credits on signup** — enough for weeks/months of use:
+
+| Provider | Free Credits | Sign Up |
+|----------|-------------|---------|
+| **Fireworks AI** | Free credits | [fireworks.ai](https://fireworks.ai) |
+| **Together AI** | $5 free | [api.together.xyz](https://api.together.xyz) |
+| **Baseten** | Free credits | [baseten.co](https://baseten.co) |
+| **Nebius** | Free credits | [nebius.ai](https://nebius.ai) |
+| **Novita AI** | Free credits | [novita.ai](https://novita.ai) |
+| **AI21 Labs** | Free credits | [ai21.com](https://ai21.com) |
+| **Upstage** | Free credits | [upstage.ai](https://upstage.ai) |
+| **NLP Cloud** | Free credits | [nlpcloud.com](https://nlpcloud.com) |
+| **Alibaba Cloud Intl** | 1M tokens free | [alibabacloud.com](https://www.alibabacloud.com) |
+| **Modal** | Free credits | [modal.com](https://modal.com) |
+| **Inference.net** | Free credits | [inference.net](https://inference.net) |
+| **Hyperbolic** | Free credits | [hyperbolic.xyz](https://hyperbolic.xyz) |
+| **SambaNova** | Free inference | [sambanova.ai](https://sambanova.ai) |
+| **Scaleway** | Free credits | [scaleway.com](https://scaleway.com) |
+
+---
+
+### 💡 Best Setups (Ranked)
+
+#### 🏆 #1 Best Free Overall
+```
+LLM_API_KEY=sk-or-v1-xxxxxx                         # OpenRouter
+LLM_MODEL=openrouter/google/gemma-4-31b-it:free     # Latest Google model, FREE
+```
+
+#### ⚡ #2 Best Free for Speed
+```
+LLM_API_KEY=gsk_xxxxxxxx                            # Groq
+LLM_MODEL=groq/llama-3.3-70b-versatile             # Sub-second responses
+```
+
+#### 📊 #3 Best Free for High Volume
+```
+LLM_API_KEY=AIzaxxxxxxxx                            # Google AI Studio
+LLM_MODEL=google/gemma-3-27b-it                     # 14,400 requests/day!
+```
+
+#### 🤯 #4 Best Free Raw Power
+```
+LLM_API_KEY=sk-or-v1-xxxxxx                         # OpenRouter
+LLM_MODEL=openrouter/nousresearch/hermes-3-llama-3.1-405b:free  # 405B params!
+```
+
+#### 🇨🇳 #5 Best Free (China-based)
+```
+LLM_API_KEY=xxxxxx                                  # Baidu ERNIE
+LLM_MODEL=baidu/ernie-4.5                           # Completely free since April 2025
+```
+
+#### 💰 #6 Best Value (Paid)
+```
+LLM_API_KEY=sk-or-v1-xxxxxx                         # OpenRouter
+LLM_MODEL=openrouter/deepseek/deepseek-v3           # $0.27/1M tokens
+```
+
+#### 🏆 #7 Best Quality (Paid)
+```
+LLM_API_KEY=sk-or-v1-xxxxxx                         # OpenRouter
+LLM_MODEL=openrouter/anthropic/claude-sonnet-4-6    # Top quality
 ```
 
 #### 🔄 Switch Models Anytime
-Just change `LLM_MODEL` in Render dashboard → Environment → Save → auto-restarts in 30 seconds. Try different models until you find your favorite!
+Change `LLM_MODEL` in Render → Environment → Save. Auto-restarts in 30 seconds.
 
 ---
 
