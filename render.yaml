@@ -31,9 +31,11 @@ services:
           name: rendclaw
           property: host
 
-      # Backup — GitHub Gist (recommended for Render)
+      # Backup — GitHub Gist (REQUIRED for Render free tier — no persistent disk!)
       - key: GITHUB_GIST_TOKEN
         sync: false
+        # ⚠️ Set this! Without it, your workspace is lost on every restart.
+        # Get a token at https://github.com/settings/tokens with 'gist' scope.
       - key: GITHUB_GIST_ID
         sync: false
       - key: BACKUP_ENABLED
