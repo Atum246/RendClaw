@@ -148,8 +148,8 @@ restore_workspace() {
 generate_config() {
     log_step "Generating OpenClaw configuration..."
 
-    # Render uses PORT env var for the main service port
-    local gateway_port="${PORT:-10000}"
+    # Gateway runs on internal port 7860 — health server uses PORT (10000) for Render
+    local gateway_port=7860
 
     # Build channel config
     local channels_config="{}"
