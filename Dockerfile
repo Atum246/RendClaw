@@ -3,7 +3,7 @@
 # Optimized for Render deployment
 # ============================================================
 
-FROM node:20-slim
+FROM node:22-slim
 
 ARG OPENCLAW_VERSION=latest
 
