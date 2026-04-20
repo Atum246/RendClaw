@@ -189,28 +189,60 @@ print(json.dumps(cfg, indent=2))
 " 2>/dev/null || echo "$channels_config")
     fi
 
-    # Write config
+    # Build allowed origins for Control UI
+    local origins=""
+    if [ -n "${NEOCLAW_EXTERNAL_URL:-}" ]; then
+        origins="\"${NEOCLAW_EXTERNAL_URL}\""
+    fi
+    if [ -n "${ALLOWED_ORIGINS:-}" ]; then
+        if [ -n "$origins" ]; then
+            origins="${origins}, ${ALLOWED_ORIGINS}"
+        else
+            origins="${ALLOWED_ORIGINS}"
+        fi
+    fi
+    # Always allow localhost
+    if [ -n "$origins" ]; then
+        origins="\"http://localhost:${gateway_port}\", \"http://127.0.0.1:${gateway_port}\", ${origins}"
+    else
+        origins="\"http://localhost:${gateway_port}\", \"http://127.0.0.1:${gateway_port}\""
+    fi
+
+    # Extract provider name from model ID (e.g. "google" from "google/gemma-3-27b-it")
+    local provider_name=$(echo "$LLM_MODEL" | cut -d'/' -f1)
+
+    # Write config — using correct OpenClaw 2026.3.x schema
     cat > /root/.openclaw/openclaw.json <<CONFIGEOF
 {
   "gateway": {
     "port": $gateway_port,
-    "token": "$GATEWAY_TOKEN",
-    "cors": {
-      "allowedOrigins": [${ALLOWED_ORIGINS:-}]
+    "mode": "local",
+    "bind": "loopback",
+    "auth": {
+      "mode": "token",
+      "token": "$GATEWAY_TOKEN"
+    },
+    "controlUi": {
+      "allowedOrigins": [$origins],
+      "dangerouslyAllowHostHeaderOriginFallback": true
     }
   },
   "models": {
-    "default": "$LLM_MODEL",
-    "apiKey": "$LLM_API_KEY"
+    "providers": {
+      "$provider_name": {
+        "apiKey": "$LLM_API_KEY"
+      }
+    }
   },
-  "channels": $channels_config,
-  "workspace": {
-    "path": "/root/.openclaw/workspace"
+  "agents": {
+    "defaults": {
+      "model": {
+        "primary": "$LLM_MODEL"
+      },
+      "workspace": "/root/.openclaw/workspace"
+    }
   },
-  "heartbeat": {
-    "enabled": true,
-    "intervalMinutes": 30
-  }
+  "channels": $channels_config
 }
 CONFIGEOF
 
