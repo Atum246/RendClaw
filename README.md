@@ -209,24 +209,280 @@ WEBHOOK_URL=https://your-webhook-endpoint.com/hook
 
 ---
 
-## 🤖 LLM Providers
+## 🔑 Getting Your GitHub Gist Token (Required for Backup)
 
-| Provider | Prefix | Example |
-|----------|--------|---------|
-| Anthropic | `anthropic/` | `anthropic/claude-sonnet-4-6` |
-| OpenAI | `openai/` | `openai/gpt-4o` |
-| Google | `google/` | `google/gemini-2.5-flash` |
-| DeepSeek | `deepseek/` | `deepseek/deepseek-v3.2` |
-| xAI | `xai/` | `xai/grok-4` |
-| Mistral | `mistral/` | `mistral/mistral-large-latest` |
-| Moonshot | `moonshot/` | `moonshot/kimi-k2.5` |
+This token lets RendClaw auto-backup your workspace. **One-time setup, 60 seconds.**
 
-### OpenRouter (All Providers)
+### Step-by-Step
 
+1. Go to **[github.com/settings/tokens](https://github.com/settings/tokens)**
+2. Click **"Generate new token"** → **"Generate new token (classic)"**
+3. Give it a name: `RendClaw Backup`
+4. **Only check the `gist` scope** — nothing else needed ✅
+   ```
+   ☐ repo
+   ☐ workflow
+   ☑ gist  ← only this one!
+   ☐ read:org
+   ☐ ...
+   ```
+5. Click **"Generate token"**
+6. Copy the token (starts with `ghp_`)
+7. Paste it into the `GITHUB_GIST_TOKEN` field on Render
+
+> ⚠️ **Save it somewhere safe** — GitHub only shows it once! But RendClaw stores it in Render's env vars, so you won't need it again.
+
+### If You Forget
+
+Your workspace resets on every restart until you add this token. No data is lost permanently — just add the token and new data gets saved from that point on.
+
+---
+
+## 🤖 AI Model Providers
+
+You can use **any AI provider** with RendClaw. Here's a comprehensive setup guide:
+
+### Quick Reference
+
+| Provider | API Key Prefix | Model Prefix | Free Tier? | Example Model |
+|----------|---------------|-------------|------------|---------------|
+| [OpenRouter](#openrouter-🔥) | `sk-or-v1-` | `openrouter/` | ✅ Free models | `openrouter/meta-llama/llama-3.1-8b-instruct:free` |
+| [NVIDIA NIM](#nvidia-nim-🟢-free) | `nvapi-` | `nvidia/` | ✅ Free! | `nvidia/llama-3.1-8b-instruct` |
+| [Puter.js](#puterjs-🟢-100-free) | *(none needed!)* | `puter/` | ✅ Free forever! | `puter/ai/gpt-4o` |
+| [OpenAI](#openai) | `sk-` | `openai/` | ❌ Pay | `openai/gpt-4o` |
+| [Anthropic](#anthropic) | `sk-ant-` | `anthropic/` | ❌ Pay | `anthropic/claude-sonnet-4-6` |
+| [Google](#google) | `AIza` | `google/` | ✅ Free tier | `google/gemini-2.5-flash` |
+| [DeepSeek](#deepseek) | `sk-` | `deepseek/` | ✅ Cheap | `deepseek/deepseek-chat` |
+| [Mistral](#mistral) | `*` | `mistral/` | ✅ Free tier | `mistral/mistral-small-latest` |
+| [Moonshot](#moonshot-kimi) | `sk-` | `moonshot/` | ✅ Free tier | `moonshot/kimi-k2.5` |
+| [xAI (Grok)](#xai-grok) | `xai-` | `xai/` | ❌ Pay | `xai/grok-4` |
+
+---
+
+### OpenRouter 🔥
+
+**One API key, 40+ models, including free ones.** The easiest way to access everything.
+
+#### How to Get Started
+
+1. Go to **[openrouter.ai](https://openrouter.ai)**
+2. Sign up (GitHub/Google login works)
+3. Go to **[openrouter.ai/keys](https://openrouter.ai/keys)**
+4. Click **"Create Key"** → copy it (starts with `sk-or-v1-`)
+5. Set on Render:
+   ```
+   LLM_API_KEY=sk-or-v1-xxxxxxxx
+   LLM_MODEL=openrouter/meta-llama/llama-3.1-8b-instruct:free
+   ```
+
+#### Free Models on OpenRouter 🆓
+
+These models cost $0 on OpenRouter:
+
+| Model | LLM_MODEL value | Best For |
+|-------|----------------|----------|
+| Llama 3.1 8B | `openrouter/meta-llama/llama-3.1-8b-instruct:free` | General chat |
+| Mistral 7B | `openrouter/mistralai/mistral-7b-instruct:free` | Fast responses |
+| Gemma 2 9B | `openrouter/google/gemma-2-9b-it:free` | Balanced |
+| Llama 3.2 3B | `openrouter/meta-llama/llama-3.2-3b-instruct:free` | Ultra-fast |
+
+#### Premium Models on OpenRouter 💎
+
+| Model | LLM_MODEL value | Cost |
+|-------|----------------|------|
+| Claude Sonnet 4 | `openrouter/anthropic/claude-sonnet-4-6` | $3/1M input |
+| GPT-4o | `openrouter/openai/gpt-4o` | $5/1M input |
+| Gemini 2.5 Flash | `openrouter/google/gemini-2.5-flash` | $0.15/1M input |
+| DeepSeek V3 | `openrouter/deepseek/deepseek-v3` | $0.27/1M input |
+
+> 💡 **Best free setup:** Use Llama 3.1 8B free for daily use, switch to Claude/GPT for complex tasks.
+
+---
+
+### NVIDIA NIM 🟢 FREE
+
+**Free AI inference from NVIDIA.** No credit card, no payment, just good models.
+
+#### What is NIM?
+
+NVIDIA NIM (NVIDIA Inference Microservices) provides free API access to open-source models hosted on NVIDIA's infrastructure. Models run on NVIDIA GPUs and are free to use.
+
+#### How to Get Started
+
+1. Go to **[build.nvidia.com](https://build.nvidia.com)**
+2. Sign up (free, no credit card needed)
+3. Go to **[build.nvidia.com/explore/recommended](https://build.nvidia.com/explore/recommended)** to browse models
+4. Pick a model → click **"Build with this NIM"**
+5. Click **"Get API Key"** — copy it (starts with `nvapi-`)
+6. Set on Render:
+   ```
+   LLM_API_KEY=nvapi-xxxxxxxx
+   LLM_MODEL=nvidia/llama-3.1-8b-instruct
+   ```
+
+#### Available Free Models 🆓
+
+| Model | Best For | Rate Limit |
+|-------|----------|------------|
+| Llama 3.1 8B Instruct | General chat, coding | 40 RPM |
+| Llama 3.1 70B Instruct | Complex reasoning | 40 RPM |
+| Mistral NeMo 12B | Fast + capable | 40 RPM |
+| Mixtral 8x7B | Expert-level tasks | 40 RPM |
+| Gemma 2 9B | Lightweight, fast | 40 RPM |
+| Phi-3 Mini | Ultra-fast, small | 40 RPM |
+
+> ⚠️ **Rate limits:** Free tier allows ~40 requests per minute. More than enough for personal AI assistant use!
+
+---
+
+### Puter.js 🟢 100% FREE
+
+**AI models with ZERO API keys.** Seriously.
+
+#### What is Puter.js?
+
+Puter.js is a free, open-source JavaScript library that gives you access to GPT-4o, Claude, Llama, Gemini, and more — **without any API keys or accounts**. It runs through Puter's cloud infrastructure.
+
+#### How to Use with RendClaw
+
+Puter.js works differently from traditional API providers — it's designed for client-side JavaScript. For RendClaw, you can use it via the **Puter CLI** or as an OpenAI-compatible proxy.
+
+**Option A: Puter CLI (Direct)**
+
+```bash
+# Install Puter CLI
+npm install -g puter
+
+# Use any model for free
+puter ai "Hello, how are you?" --model gpt-4o
+puter ai "Hello, how are you?" --model claude-sonnet-4-6
+puter ai "Hello, how are you?" --model llama-3.1-70b
 ```
-LLM_API_KEY=sk-or-v1-xxxxxxxx
+
+**Option B: OpenAI-Compatible Mode**
+
+Set in Render environment:
+```
+LLM_API_KEY=puter-free
+LLM_MODEL=puter/ai/gpt-4o
+```
+
+#### Available Models (All Free!) 🆓
+
+| Model | Capability |
+|-------|-----------|
+| GPT-4o | OpenAI's best — free via Puter |
+| Claude Sonnet 4 | Anthropic's best — free via Puter |
+| Llama 3.1 70B | Meta's open model |
+| Gemini 2.5 Flash | Google's fast model |
+| Mixtral 8x22B | Mistral's expert model |
+
+> 🎯 **Why Puter?** No API keys, no billing, no rate limits for personal use. Perfect for trying out RendClaw before committing to a paid provider.
+
+> ⚠️ **Note:** Puter.js is primarily designed for browser/client-side use. For production server deployments like RendClaw, OpenRouter or direct provider keys are more reliable.
+
+---
+
+### OpenAI
+
+1. Go to **[platform.openai.com/api-keys](https://platform.openai.com/api-keys)**
+2. Create a new secret key
+3. Set on Render:
+   ```
+   LLM_API_KEY=sk-xxxxxxxx
+   LLM_MODEL=openai/gpt-4o
+   ```
+
+### Anthropic
+
+1. Go to **[console.anthropic.com](https://console.anthropic.com)**
+2. Create an API key
+3. Set on Render:
+   ```
+   LLM_API_KEY=sk-ant-xxxxxxxx
+   LLM_MODEL=anthropic/claude-sonnet-4-6
+   ```
+
+### Google
+
+1. Go to **[aistudio.google.com/apikey](https://aistudio.google.com/apikey)**
+2. Create an API key
+3. Set on Render:
+   ```
+   LLM_API_KEY=AIzaxxxxxxxx
+   LLM_MODEL=google/gemini-2.5-flash
+   ```
+
+### DeepSeek
+
+1. Go to **[platform.deepseek.com](https://platform.deepseek.com)**
+2. Create an API key
+3. Set on Render:
+   ```
+   LLM_API_KEY=sk-xxxxxxxx
+   LLM_MODEL=deepseek/deepseek-chat
+   ```
+
+### Mistral
+
+1. Go to **[console.mistral.ai](https://console.mistral.ai)**
+2. Create an API key
+3. Set on Render:
+   ```
+   LLM_API_KEY=xxxxxxxx
+   LLM_MODEL=mistral/mistral-small-latest
+   ```
+
+### Moonshot (Kimi)
+
+1. Go to **[platform.moonshot.cn](https://platform.moonshot.cn)**
+2. Create an API key
+3. Set on Render:
+   ```
+   LLM_API_KEY=sk-xxxxxxxx
+   LLM_MODEL=moonshot/kimi-k2.5
+   ```
+
+### xAI (Grok)
+
+1. Go to **[console.x.ai](https://console.x.ai)**
+2. Create an API key
+3. Set on Render:
+   ```
+   LLM_API_KEY=xai-xxxxxxxx
+   LLM_MODEL=xai/grok-4
+   ```
+
+---
+
+### 💡 Recommended Setups
+
+#### 🆓 Completely Free
+```
+LLM_API_KEY=nvapi-xxxxxxxx          # NVIDIA NIM
+LLM_MODEL=nvidia/llama-3.1-8b-instruct
+```
+Or:
+```
+LLM_API_KEY=sk-or-v1-xxxxxxxx       # OpenRouter
+LLM_MODEL=openrouter/meta-llama/llama-3.1-8b-instruct:free
+```
+
+#### 💰 Best Value
+```
+LLM_API_KEY=sk-or-v1-xxxxxxxx       # OpenRouter
+LLM_MODEL=openrouter/deepseek/deepseek-v3
+```
+DeepSeek V3 is ~$0.27/1M tokens — incredibly cheap for its quality.
+
+#### 🏆 Best Quality
+```
+LLM_API_KEY=sk-or-v1-xxxxxxxx       # OpenRouter
 LLM_MODEL=openrouter/anthropic/claude-sonnet-4-6
 ```
+
+#### 🔄 Switch Models Anytime
+Just change `LLM_MODEL` in Render dashboard → Environment → Save → service restarts with new model. Takes 30 seconds.
 
 ---
 
